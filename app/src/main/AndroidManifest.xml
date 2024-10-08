@@ -11,6 +11,9 @@
         android:theme="@style/Theme.OnJasa"
         tools:targetApi="31">
         <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".ACRepair"
             android:exported="false" />
         <activity
