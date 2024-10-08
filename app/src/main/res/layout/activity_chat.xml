@@ -65,23 +65,7 @@
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/phoneButton"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="60dp"
-            android:contentDescription="Phone Call"
-            android:src="@drawable/ic_phone"
-            app:tint="@color/white"/>
 
-        <ImageButton
-            android:id="@+id/videoCallButton"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="10dp"
-            android:contentDescription="Video Call"
-            android:src="@drawable/ic_videocam"
-            app:tint="@color/white"/>
     </androidx.appcompat.widget.Toolbar>
 
     <!-- EditText for typing messages -->
@@ -90,7 +74,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:autofillHints=""
         android:hint="Type a message"
+        android:inputType="TODO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
