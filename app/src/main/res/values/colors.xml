@@ -3,12 +3,13 @@
     <color name="black">#1a1a1a</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#ff9800</color>
-    <color name="green">#4caf50</color>
+    <color name="green">#059142</color>
     <color name="orangemuda">#FFC277</color>
     <color name="ungujanda">#8F98FD</color>
     <color name="biru">#0C53CF</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="cardbiru">#C7CCFE</color>
     <color name="merah">#EA2222</color>
+    <color name="cream">#FFE1BB</color>
 </resources>
 

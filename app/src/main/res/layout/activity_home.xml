@@ -25,9 +25,9 @@
 
     <!-- Notification Icon -->
     <ImageView
-        android:id="@+id/notification_icon"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:id="@+id/notification"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:src="@drawable/notification"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -227,7 +227,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        app:itemIconSize="48dp"
+        app:itemIconSize="30dp"
         app:itemTextColor="@android:color/transparent"
         app:menu="@menu/bottom_navigation_menu"
         app:layout_constraintBottom_toBottomOf="parent"

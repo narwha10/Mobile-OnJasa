@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ACRepair">
+    tools:context=".ACRepairActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -68,6 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,14 +85,19 @@
             android:paddingStart="20sp"
             android:paddingTop="10sp"
             android:paddingEnd="20sp"
-            android:paddingBottom="10sp">
+            android:paddingBottom="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+            app:layout_constraintVertical_bias="0.0">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15sp"
                 android:background="@drawable/outline_constraint"
                 android:padding="5sp"
-                android:layout_marginBottom="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="118dp">
@@ -228,24 +234,28 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
+
     </ScrollView>
+
+
 
     <Button
         android:id="@+id/button"
-        android:layout_width="match_parent"
+        android:layout_width="370dp"
+        android:layout_height="75dp"
         android:layout_marginStart="20sp"
         android:layout_marginEnd="20sp"
-        android:layout_height="wrap_content"
         android:backgroundTint="@color/merah"
-        android:text="Cancel"
-        android:textSize="20sp"
         android:padding="15sp"
+        android:rotationX="5"
+        android:text="Cancel"
+        android:textSize="25sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.978" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

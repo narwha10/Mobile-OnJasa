@@ -69,7 +69,6 @@ class SignUpActivity : AppCompatActivity() {
             }
 
             registerUser(email, password)
-
         }
 
         // Set up window insets for edge-to-edge experience
@@ -84,8 +83,8 @@ class SignUpActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) {
                 if (it.isSuccessful) {
-                    // Pendaftaran berhasil, lakukan sesuatu
-                    Intent(this@SignUpActivity, HomeActivity::class.java).also {
+                    // Pendaftaran berhasil, pindah ke GetStartedActivity
+                    Intent(this@SignUpActivity, GetStartedActivity::class.java).also {
                         it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(it)
                     }
