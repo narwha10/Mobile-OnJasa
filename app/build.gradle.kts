@@ -48,10 +48,20 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.auth.ktx)
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.google.firebase.auth.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation (libs.osmdroid.android)
+    implementation (libs.okhttp)
+    implementation (libs.volley)
+    implementation(libs.volley)
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+
+    implementation(libs.androidx.preference.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }

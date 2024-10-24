@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
         android:paddingTop="8dp"
-        app:itemIconSize="48dp"
+        app:itemIconSize="30dp"
         app:itemIconTint="@color/black"
         app:itemTextColor="@android:color/transparent"
         app:labelVisibilityMode="labeled"

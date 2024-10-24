@@ -8,46 +8,40 @@
     tools:context=".ACRepairActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="136dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal|center_vertical"
+        android:id="@+id/layananorder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/imageView5"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:layout_marginRight="5sp"
-            app:srcCompat="@drawable/maintenance_tools"
-            tools:layout_editor_absoluteX="38dp"
-            tools:layout_editor_absoluteY="16dp" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Service icon"
+            app:srcCompat="@drawable/maintenance_tools" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="AC Repair"
             android:textSize="20sp"
             android:textStyle="bold" />
-
-
     </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="162dp"
         android:layout_height="238dp"
-        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/layananorder"
         app:srcCompat="@drawable/find_location" />
 
     <TextView
@@ -85,22 +79,14 @@
             android:paddingStart="20sp"
             android:paddingTop="10sp"
             android:paddingEnd="20sp"
-            android:paddingBottom="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView2"
-            app:layout_constraintVertical_bias="0.0">
+            android:paddingBottom="10sp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15sp"
                 android:background="@drawable/outline_constraint"
-                android:padding="5sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="118dp">
+                android:padding="5sp">
 
                 <LinearLayout
                     android:id="@+id/contentCardTeknisi2"
@@ -116,25 +102,21 @@
                     app:layout_constraintVertical_bias="0.5">
 
                     <TextView
-                        android:id="@+id/namaTeknisi2"
+                        android:id="@+id/namaTeknisiTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EL Besok"
+
                         android:textColor="@color/black"
                         android:textSize="23sp"
-                        android:textStyle="bold"
-                        tools:layout_editor_absoluteX="104dp"
-                        tools:layout_editor_absoluteY="8dp" />
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/hargaTeknisi2"
+                        android:id="@+id/hargaTeknisiTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp.69.000"
                         android:textColor="@color/black"
                         android:textSize="19sp"
-                        app:layout_constraintTop_toBottomOf="@+id/namaTeknisi"
-                        tools:layout_editor_absoluteX="104dp" />
+                        app:layout_constraintTop_toBottomOf="@+id/namaTeknisi" />
 
                 </LinearLayout>
 
@@ -163,14 +145,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Jarak di sini -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15sp"
                 android:background="@drawable/outline_constraint"
-                android:padding="5sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                android:padding="5sp">
 
                 <LinearLayout
                     android:id="@+id/contentCardTeknisi"
@@ -186,25 +167,22 @@
                     app:layout_constraintVertical_bias="0.5">
 
                     <TextView
-                        android:id="@+id/namaTeknisi"
+                        android:id="@+id/namaTeknisiTextView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EL Turu"
+
                         android:textColor="@color/black"
                         android:textSize="23sp"
-                        android:textStyle="bold"
-                        tools:layout_editor_absoluteX="104dp"
-                        tools:layout_editor_absoluteY="8dp" />
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/hargaTeknisi"
+                        android:id="@+id/hargaTeknisiTextView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp.12.000"
+
                         android:textColor="@color/black"
                         android:textSize="19sp"
-                        app:layout_constraintTop_toBottomOf="@+id/namaTeknisi"
-                        tools:layout_editor_absoluteX="104dp" />
+                        app:layout_constraintTop_toBottomOf="@+id/namaTeknisi" />
 
                 </LinearLayout>
 
@@ -233,14 +211,74 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Jarak di sini -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15sp"
+                android:background="@drawable/outline_constraint"
+                android:padding="5sp">
+
+                <LinearLayout
+                    android:id="@+id/contentCardTeknisi3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="13dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView10"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/imageView4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5">
+
+                    <TextView
+                        android:id="@+id/namaTeknisiTextView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/hargaTeknisiTextView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        app:layout_constraintTop_toBottomOf="@+id/namaTeknisi3" />
+
+                </LinearLayout>
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginStart="28dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.666"
+                    app:shapeAppearanceOverlay="@style/roundedProfileImage" />
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="78dp"
+                    android:layout_height="78dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/badge" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
-
     </ScrollView>
-
-
-
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btncancelorder"
         android:layout_width="370dp"
         android:layout_height="75dp"
         android:layout_marginStart="20sp"

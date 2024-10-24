@@ -65,7 +65,7 @@ class OrderListActivity : AppCompatActivity() {
                 R.id.navigation_home -> {
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
-
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     true
                 }
                 R.id.activity -> {
@@ -77,7 +77,9 @@ class OrderListActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_profile -> {
-                    // Handle Profile navigation (jika perlu)
+                    val intent = Intent(this@OrderListActivity, ProfileActivity::class.java)
+                    startActivity(intent)
+
                     true
                 }
                 else -> false

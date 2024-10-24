@@ -75,6 +75,7 @@
         app:layout_constraintTop_toBottomOf="@id/service_subtitle">
 
         <LinearLayout
+            android:id="@+id/menuACRepair"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -99,7 +100,6 @@
                 android:textColor="@color/black"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
     <!-- AC Installation Button -->
     <androidx.cardview.widget.CardView
         android:id="@+id/ac_installation_card"
@@ -115,6 +115,7 @@
         app:layout_constraintTop_toBottomOf="@id/service_subtitle">
 
         <LinearLayout
+            android:id="@+id/menuACInstallation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -155,6 +156,7 @@
         app:layout_constraintTop_toBottomOf="@id/ac_repair_card">
 
         <LinearLayout
+            android:id="@+id/menuACMaintenance"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -179,7 +181,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
     <!-- AC Wash Button -->
     <androidx.cardview.widget.CardView
         android:id="@+id/ac_wash_card"
@@ -195,6 +196,7 @@
         app:layout_constraintTop_toBottomOf="@id/ac_installation_card">
 
         <LinearLayout
+            android:id="@+id/menuACWash"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -226,20 +228,20 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
         android:paddingTop="8dp"
         app:itemIconSize="30dp"
+        app:itemIconTint="@color/black"
         app:itemTextColor="@android:color/transparent"
-        app:menu="@menu/bottom_navigation_menu"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:labelVisibilityMode="labeled" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.991"
+        app:menu="@menu/bottom_navigation_menu" />
 
-    <Button
-        android:id="@+id/btnlogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        tools:layout_editor_absoluteX="145dp"
-        tools:layout_editor_absoluteY="536dp" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

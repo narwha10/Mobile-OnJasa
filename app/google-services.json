@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "505914560391",
-    "project_id": "onjasa-8cb2e",
-    "storage_bucket": "onjasa-8cb2e.appspot.com"
+    "project_number": "972630306946",
+    "project_id": "onjasa-151ed",
+    "storage_bucket": "onjasa-151ed.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:505914560391:android:c7994d5c840fc6cb708d22",
+        "mobilesdk_app_id": "1:972630306946:android:5f52a9f4a8d71cad2ac49b",
         "android_client_info": {
           "package_name": "com.example.onjasa"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA4-SjXVrXiK_Iu7USs1CJjYrJ_DbI83bA"
+          "current_key": "AIzaSyBXkWIt0GZI7LgHpNoDOq-Conl33xG9-lE"
         }
       ],
       "services": {

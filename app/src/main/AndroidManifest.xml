@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,13 +16,16 @@
         android:theme="@style/Theme.OnJasa"
         tools:targetApi="31">
         <activity
-            android:name=".Your_Activity"
+            android:name=".ACPaymentActivity"
             android:exported="false" />
         <activity
-            android:name=".chatout"
+            android:name=".MapViewActivity"
             android:exported="false" />
         <activity android:name=".OrderListActivity" />
         <activity android:name=".GetStartedActivity" />
+        <activity android:name=".OrderACRepairActivity" />
+        <activity android:name=".ACRepairActivity" />
+        <activity android:name=".ProfileActivity" />
         <activity
             android:name=".HomeActivity"
             android:exported="true" /> <!-- LoginActivity sebagai halaman utama -->
