@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/imgheader"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
@@ -26,7 +26,7 @@
             app:srcCompat="@drawable/maintenance_tools" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/headertitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="AC Repair"
