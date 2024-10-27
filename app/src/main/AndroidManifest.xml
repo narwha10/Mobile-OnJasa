@@ -26,6 +26,7 @@
         <activity android:name=".OrderACRepairActivity" />
         <activity android:name=".ACRepairActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".LoadingOrderActivity" />
         <activity
             android:name=".HomeActivity"
             android:exported="true" /> <!-- LoginActivity sebagai halaman utama -->

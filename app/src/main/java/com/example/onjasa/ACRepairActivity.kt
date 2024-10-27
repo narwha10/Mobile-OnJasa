@@ -4,15 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
 
 class ACRepairActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
@@ -34,7 +35,6 @@ class ACRepairActivity : AppCompatActivity() {
         val headerTitle = intent.getStringExtra("header_title") ?: "No Title"
         val headerImageResId = intent.getIntExtra("header_image", R.drawable.order_processing)
 
-        // Set header title and image to views
         val headerTitleTextView: TextView = findViewById(R.id.headertitle)
         headerTitleTextView.text = headerTitle
 
@@ -59,13 +59,17 @@ class ACRepairActivity : AppCompatActivity() {
         // Firestore Initialization
         db = FirebaseFirestore.getInstance()
 
-        // Initialize TextViews
+        // Initialize TextViews and Cards
         namaTeknisiTextView = findViewById(R.id.namaTeknisiTextView)
         namaTeknisiTextView2 = findViewById(R.id.namaTeknisiTextView2)
         namaTeknisiTextView3 = findViewById(R.id.namaTeknisiTextView3)
         hargaTeknisiTextView = findViewById(R.id.hargaTeknisiTextView)
         hargaTeknisiTextView2 = findViewById(R.id.hargaTeknisiTextView2)
         hargaTeknisiTextView3 = findViewById(R.id.hargaTeknisiTextView3)
+
+        val contentCardTeknisi1: LinearLayout = findViewById(R.id.contentCardTeknisi)
+        val contentCardTeknisi2: LinearLayout = findViewById(R.id.contentCardTeknisi2)
+        val contentCardTeknisi3: LinearLayout = findViewById(R.id.contentCardTeknisi3)
 
         // Retrieve data from Firestore
         db.collection("technician")
@@ -96,11 +100,44 @@ class ACRepairActivity : AppCompatActivity() {
                     hargaTeknisiTextView.text = hargaTeknisiList.getOrNull(0) ?: "No data"
                     hargaTeknisiTextView2.text = hargaTeknisiList.getOrNull(1) ?: "No data"
                     hargaTeknisiTextView3.text = hargaTeknisiList.getOrNull(2) ?: "No data"
+
+                    // Set up click listeners
+                    setClickListeners(
+                        contentCardTeknisi1, namaTeknisiList.getOrNull(0), hargaTeknisiList.getOrNull(0),
+                        contentCardTeknisi2, contentCardTeknisi3
+                    )
+                    setClickListeners(
+                        contentCardTeknisi2, namaTeknisiList.getOrNull(1), hargaTeknisiList.getOrNull(1),
+                        contentCardTeknisi1, contentCardTeknisi3
+                    )
+                    setClickListeners(
+                        contentCardTeknisi3, namaTeknisiList.getOrNull(2), hargaTeknisiList.getOrNull(2),
+                        contentCardTeknisi1, contentCardTeknisi2
+                    )
                 } else {
                     Log.e("FirestoreError", "Error getting documents: ", task.exception)
                     namaTeknisiTextView.text = "Error loading data"
                 }
             }
     }
-}
 
+    private fun setClickListeners(
+        card: LinearLayout,
+        nama: String?, harga: String?,
+        cardToDisable1: LinearLayout, cardToDisable2: LinearLayout
+    ) {
+        card.setOnClickListener {
+            val intent = Intent(this@ACRepairActivity, LoadingOrderActivity::class.java).apply {
+                putExtra("TECHNICIAN_NAME", nama) // Ubah ke nama kunci yang sesuai
+                putExtra("TECHNICIAN_PRICE", harga) // Ubah ke nama kunci yang sesuai
+            }
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+
+            // Nonaktifkan kartu lainnya
+            cardToDisable1.isEnabled = false
+            cardToDisable2.isEnabled = false
+            card.isEnabled = false // Nonaktifkan kartu yang dipilih juga
+        }
+    }
+}

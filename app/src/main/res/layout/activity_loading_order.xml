@@ -8,17 +8,6 @@
     tools:context=".OrderACRepairActivity">
 
 
-    <ImageView
-        android:id="@+id/imageView11"
-        android:layout_width="30sp"
-        android:layout_height="25sp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/arrow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
-
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="200dp"
@@ -26,20 +15,8 @@
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal|center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
-        app:layout_constraintStart_toEndOf="@+id/imageView11"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="loading order"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -85,9 +62,10 @@
                 tools:layout_editor_absoluteY="524dp" />
 
             <TextView
+                android:id="@+id/countdownTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="04.52"
+                android:text="05:00"
                 android:textAlignment="textEnd"
                 android:textSize="15sp" />
 
@@ -121,7 +99,6 @@
                     android:id="@+id/namaTeknisi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft=""
                     android:text="Raden Warren"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -185,5 +162,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.978" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Loading Order"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="105dp"
+        tools:layout_editor_absoluteY="34dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
