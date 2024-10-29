@@ -27,6 +27,7 @@
         android:id="@+id/service_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_marginStart="16dp"
         android:text="Halo, Galnigga"
         android:textColor="@android:color/black"
@@ -133,19 +134,5 @@
     </androidx.cardview.widget.CardView>
 
     <!-- Bottom Navigation View -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        android:paddingTop="8dp"
-        app:itemIconSize="30dp"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@android:color/transparent"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
