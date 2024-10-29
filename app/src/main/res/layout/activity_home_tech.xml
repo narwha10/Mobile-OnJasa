@@ -53,86 +53,12 @@
         android:ellipsize="end"
         android:maxLines="1"/>
 
-    <!-- AC Repair Button -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/ac_repair_card"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardBackgroundColor="@color/orangemuda"
-        app:cardCornerRadius="16dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="50dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintWidth_percent="0.35"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/service_subtitle">
-
-        <LinearLayout
-            android:id="@+id/menuACRepair"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:contentDescription="AC Repair Icon"
-                android:src="@drawable/maintenance_tools" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="AC Repair"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- AC Installation Button -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/ac_installation_card"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardBackgroundColor="@color/ungujanda"
-        app:cardCornerRadius="16dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="50dp"
-        app:layout_constraintWidth_percent="0.35"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toBottomOf="@id/service_subtitle">
-
-        <LinearLayout
-            android:id="@+id/menuACInstallation"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="58dp"
-                android:contentDescription="AC Installation Icon"
-                android:src="@drawable/easy_installation" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="AC Installation"
-                android:textSize="16sp"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Bottom Navigation View -->
+    <TextView
+        android:id="@+id/notifmasuk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AC Repair"
+        tools:layout_editor_absoluteX="163dp"
+        tools:layout_editor_absoluteY="135dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

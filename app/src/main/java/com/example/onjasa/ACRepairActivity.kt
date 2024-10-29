@@ -1,6 +1,6 @@
 package com.example.onjasa
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,7 +27,6 @@ class ACRepairActivity : AppCompatActivity() {
     private lateinit var hargaTeknisiTextView2: TextView
     private lateinit var hargaTeknisiTextView3: TextView
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -145,7 +144,7 @@ class ACRepairActivity : AppCompatActivity() {
             "technician_name" to nama,
             "technician_price" to harga,
             "order_timestamp" to Date(),
-            "status" to "processing" // or "pending"
+            "status" to "processing"
         )
 
         // Save to Firestore in "orders" collection
@@ -154,6 +153,10 @@ class ACRepairActivity : AppCompatActivity() {
             .addOnSuccessListener { documentReference ->
                 Log.d("Firestore", "Order added with ID: ${documentReference.id}")
                 Toast.makeText(this, "Order berhasil!", Toast.LENGTH_SHORT).show()
+
+                // Save username to SharedPreferences for HomeTechActivity access
+                val sharedPrefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPrefs.edit().putString("username", nama).apply()
 
                 // Proceed to LoadingOrderActivity with technician details
                 val intent = Intent(this, LoadingOrderActivity::class.java).apply {
