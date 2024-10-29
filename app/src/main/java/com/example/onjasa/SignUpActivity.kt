@@ -27,28 +27,28 @@ class SignUpActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_sign_up)
 
-        // Inisialisasi komponen UI
+        // Initialize UI components
         val tvSignIn = findViewById<TextView>(R.id.tvSignIn)
         btnregister = findViewById(R.id.btnregister)
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
-        etUsername = findViewById(R.id.etUsername)  // Tambahan input username
+        etUsername = findViewById(R.id.etUsername)  // Additional username input
 
-        // Inisialisasi FirebaseAuth dan Firestore
+        // Initialize FirebaseAuth and Firestore
         firestore = FirebaseFirestore.getInstance()
 
-        // Event ketika TextView 'Sign In' diklik
+        // Event when 'Sign In' TextView is clicked
         tvSignIn.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        // Event ketika tombol register diklik
+        // Event when register button is clicked
         btnregister.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
             val username = etUsername.text.toString().trim()
 
-            // Validasi input
+            // Input validation
             if (username.isEmpty()) {
                 etUsername.error = "Username harus diisi"
                 etUsername.requestFocus()
@@ -73,7 +73,7 @@ class SignUpActivity : AppCompatActivity() {
             saveUserToDatabase(username, email, password)
         }
 
-        // Set up window insets untuk edge-to-edge experience
+        // Set up window insets for edge-to-edge experience
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -81,26 +81,26 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-
     private fun saveUserToDatabase(username: String, email: String , password: String) {
         val userId = firestore.collection("users").document().id
         val user = hashMapOf(
             "username" to username,
             "email" to email,
-            "password" to password
+            "password" to password,
+            "level" to false // Added 'level' field with default value 'false'
         )
 
         firestore.collection("users").document(userId)
             .set(user)
             .addOnSuccessListener {
-                // Berhasil menyimpan, lanjut ke GetStartedActivity
+                // Successfully saved, proceed to GetStartedActivity
                 Intent(this@SignUpActivity, GetStartedActivity::class.java).also {
                     it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(it)
                 }
             }
             .addOnFailureListener { e ->
-                // Gagal menyimpan data
+                // Failed to save data
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
