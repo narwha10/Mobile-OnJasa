@@ -61,6 +61,7 @@ dependencies {
     implementation (libs.converter.gson)
 
     implementation(libs.androidx.preference.ktx)
+    implementation(libs.firebase.database.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

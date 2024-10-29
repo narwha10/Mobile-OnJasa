@@ -9,11 +9,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Date
 
 class ACRepairActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
@@ -101,7 +103,7 @@ class ACRepairActivity : AppCompatActivity() {
                     hargaTeknisiTextView2.text = hargaTeknisiList.getOrNull(1) ?: "No data"
                     hargaTeknisiTextView3.text = hargaTeknisiList.getOrNull(2) ?: "No data"
 
-                    // Set up click listeners
+                    // Set up click listeners for cards to select a technician
                     setClickListeners(
                         contentCardTeknisi1, namaTeknisiList.getOrNull(0), hargaTeknisiList.getOrNull(0),
                         contentCardTeknisi2, contentCardTeknisi3
@@ -127,17 +129,44 @@ class ACRepairActivity : AppCompatActivity() {
         cardToDisable1: LinearLayout, cardToDisable2: LinearLayout
     ) {
         card.setOnClickListener {
-            val intent = Intent(this@ACRepairActivity, LoadingOrderActivity::class.java).apply {
-                putExtra("TECHNICIAN_NAME", nama) // Ubah ke nama kunci yang sesuai
-                putExtra("TECHNICIAN_PRICE", harga) // Ubah ke nama kunci yang sesuai
-            }
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-
-            // Nonaktifkan kartu lainnya
+            // Disable other cards
             cardToDisable1.isEnabled = false
             cardToDisable2.isEnabled = false
-            card.isEnabled = false // Nonaktifkan kartu yang dipilih juga
+            card.isEnabled = false // Disable selected card
+
+            // Save order data to Firestore and proceed to LoadingOrderActivity
+            saveOrderToFirestore(nama, harga)
         }
+    }
+
+    private fun saveOrderToFirestore(nama: String?, harga: String?) {
+        // Prepare order data
+        val orderData = hashMapOf(
+            "technician_name" to nama,
+            "technician_price" to harga,
+            "order_timestamp" to Date(),
+            "status" to "processing" // or "pending"
+        )
+
+        // Save to Firestore in "orders" collection
+        db.collection("orders")
+            .add(orderData)
+            .addOnSuccessListener { documentReference ->
+                Log.d("Firestore", "Order added with ID: ${documentReference.id}")
+                Toast.makeText(this, "Order berhasil!", Toast.LENGTH_SHORT).show()
+
+                // Proceed to LoadingOrderActivity with technician details
+                val intent = Intent(this, LoadingOrderActivity::class.java).apply {
+                    putExtra("TECHNICIAN_NAME", nama)
+                    putExtra("TECHNICIAN_PRICE", harga)
+                }
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error adding order", e)
+                Toast.makeText(this, "Gagal order. Coba lagi!", Toast.LENGTH_SHORT).show()
+            }
     }
 }

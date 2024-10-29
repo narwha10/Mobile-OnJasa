@@ -20,6 +20,7 @@ osmdroidAndroid = "6.1.13"
 retrofit = "2.9.0"
 volley = "1.2.1"
 preferenceKtx = "1.2.1"
+firebaseDatabaseKtx = "21.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,7 @@ osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "os
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
