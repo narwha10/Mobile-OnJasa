@@ -153,7 +153,7 @@ class ACRepairActivity : AppCompatActivity() {
             .add(orderData)
             .addOnSuccessListener { documentReference ->
                 Log.d("Firestore", "Order added with ID: ${documentReference.id}")
-                Toast.makeText(this, "Order berhasil dikirim!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Order berhasil!", Toast.LENGTH_SHORT).show()
 
                 // Proceed to LoadingOrderActivity with technician details
                 val intent = Intent(this, LoadingOrderActivity::class.java).apply {
@@ -166,7 +166,7 @@ class ACRepairActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("Firestore", "Error adding order", e)
-                Toast.makeText(this, "Gagal mengirim order. Coba lagi!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Gagal order. Coba lagi!", Toast.LENGTH_SHORT).show()
             }
     }
 }
