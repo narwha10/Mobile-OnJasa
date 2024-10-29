@@ -18,7 +18,7 @@
         android:layout_marginStart="20dp"
         android:contentDescription="Back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Teks 'Your Activity' -->
     <TextView
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="CHAT"
+        android:text="your activity"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
@@ -41,80 +41,48 @@
         android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:text="El Galungskie"
+        android:layout_marginStart="44dp"
+        android:text="Ongoing"
         android:textSize="20sp"
-        android:textStyle="bold"
+        android:textStyle=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintVertical_bias="0.106"
         tools:ignore="DuplicateIds" />
+
+
+
+
+    <!-- Teks 'gambar 2 wir' -->
 
     <TextView
         android:id="@+id/text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:text="El Galungskie"
+        android:layout_marginStart="32dp"
+        android:text="History"
         android:textSize="20sp"
-        android:textStyle="bold"
+        android:textColor="#0000FF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.297"
+        app:layout_constraintVertical_bias="0.105"
         tools:ignore="DuplicateIds" />
 
-    <TextView
-        android:id="@+id/textbawa2"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Kalo ga trol ya nipu"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView1"
-        tools:ignore="DuplicateIds,MissingConstraints"
-        tools:layout_editor_absoluteY="272dp" />
+        android:layout_margin="8dp"
+        app:cardCornerRadius="8dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="8dp"
+        app:cardBackgroundColor="@color/ungujanda">
 
-    <TextView
-        android:id="@+id/textbawa1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Kalo ga trol ya nipu"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView1"
-        tools:ignore="DuplicateIds,MissingConstraints"
-        tools:layout_editor_absoluteY="151dp" />
+    </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imageView1"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginStart="28dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15"
-        app:shapeAppearanceOverlay="@style/roundedProfileImage" />
 
-    <!-- Teks 'gambar 2 wir' -->
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imageView2"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginStart="28dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.30"
-        app:shapeAppearanceOverlay="@style/roundedProfileImage" />
+
 
 
 
@@ -129,6 +97,53 @@
         app:menu="@menu/bottom_navigation_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:labelVisibilityMode="labeled" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/ungujanda"
+
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="185dp">
+
+
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/easy_installation__1_" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvOrderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AC Repair"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvOrderTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today, 11:30 AM"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

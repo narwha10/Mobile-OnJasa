@@ -102,9 +102,7 @@
                     android:text="Raden Warren"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    tools:layout_editor_absoluteX="104dp"
-                    tools:layout_editor_absoluteY="8dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/hargaTeknisi"
