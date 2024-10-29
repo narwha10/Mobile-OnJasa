@@ -35,6 +35,7 @@ class HomeTechActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onSupportNavigateUp(): Boolean {
         // Tidak ada navController, jadi kita bisa langsung mengembalikan nilai true
         return true
