@@ -63,17 +63,28 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
-        // Cari pengguna berdasarkan email di Firestore
+        // Cari pengguna berdasarkan email dan password di Firestore
         firestore.collection("users")
             .whereEqualTo("email", email)
             .whereEqualTo("password", password)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    // Login berhasil, pindah ke HomeActivity
-                    Intent(this@LoginActivity, HomeActivity::class.java).also { intent ->
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
+                    val document = documents.documents[0]
+                    val level = document.getBoolean("level") ?: false  // Ambil nilai level, default false jika null
+
+                    if (level) {
+                        // Jika level adalah true, pindah ke HomeTechActivity
+                        Intent(this@LoginActivity, HomeTechActivity::class.java).also { intent ->
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
+                    } else {
+                        // Jika level adalah false, pindah ke HomeActivity
+                        Intent(this@LoginActivity, HomeActivity::class.java).also { intent ->
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
                     }
                 } else {
                     // Jika tidak ditemukan, tampilkan pesan kesalahan
