@@ -2,27 +2,32 @@ package com.example.onjasa
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract.Profile
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var btnlogout: Button
+    private lateinit var usernameTextView: TextView
+    private lateinit var profilePicture: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        // Menemukan elemen UI
+        usernameTextView = findViewById(R.id.username_text)
+        profilePicture = findViewById(R.id.profile_picture)
 
+        // Mengambil username dari Intent
+        val username = intent.getStringExtra("username") ?: "Guest"
+        usernameTextView.text = "Hello, $username" // Tampilkan "Hello, [username]" atau "Hello, Guest" jika null
+
+
+        // Set listener untuk notifikasi
         val notification: ImageView = findViewById(R.id.notification)
-
         notification.setOnClickListener {
             val intent = Intent(this@HomeActivity, NotificationActivity::class.java)
             startActivity(intent)
@@ -74,7 +79,6 @@ class HomeActivity : AppCompatActivity() {
                     // Pindah ke OrderListActivity
                     val intent = Intent(this@HomeActivity, OrderListActivity::class.java)
                     startActivity(intent)
-
                     true
                 }
                 R.id.chat -> {
@@ -85,7 +89,6 @@ class HomeActivity : AppCompatActivity() {
                 R.id.navigation_profile -> {
                     val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
                     startActivity(intent)
-
                     true
                 }
                 else -> false
