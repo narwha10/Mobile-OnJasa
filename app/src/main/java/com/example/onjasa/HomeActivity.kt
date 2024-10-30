@@ -25,7 +25,6 @@ class HomeActivity : AppCompatActivity() {
         val username = intent.getStringExtra("username") ?: "Guest"
         usernameTextView.text = "Hello, $username" // Tampilkan "Hello, [username]" atau "Hello, Guest" jika null
 
-
         // Set listener untuk notifikasi
         val notification: ImageView = findViewById(R.id.notification)
         notification.setOnClickListener {
@@ -38,6 +37,7 @@ class HomeActivity : AppCompatActivity() {
         acRepair.setOnClickListener {
             val intent = Intent(this@HomeActivity, OrderACRepairActivity::class.java)
             intent.putExtra("service_type", "AC Repair")
+            intent.putExtra("username", username)  // Kirim username
             startActivity(intent)
         }
 
@@ -46,6 +46,7 @@ class HomeActivity : AppCompatActivity() {
         acInstallation.setOnClickListener {
             val intent = Intent(this@HomeActivity, OrderACRepairActivity::class.java)
             intent.putExtra("service_type", "AC Installation")
+            intent.putExtra("username", username)  // Kirim username
             startActivity(intent)
         }
 
@@ -54,6 +55,7 @@ class HomeActivity : AppCompatActivity() {
         acMaintenance.setOnClickListener {
             val intent = Intent(this@HomeActivity, OrderACRepairActivity::class.java)
             intent.putExtra("service_type", "AC Maintenance")
+            intent.putExtra("username", username)  // Kirim username
             startActivity(intent)
         }
 
@@ -62,6 +64,7 @@ class HomeActivity : AppCompatActivity() {
         acWash.setOnClickListener {
             val intent = Intent(this@HomeActivity, OrderACRepairActivity::class.java)
             intent.putExtra("service_type", "AC Wash")
+            intent.putExtra("username", username)  // Kirim username
             startActivity(intent)
         }
 
