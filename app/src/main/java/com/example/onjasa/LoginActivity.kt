@@ -14,7 +14,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var btnLogin: Button
-    private lateinit var etEmail: EditText
+    private lateinit var etUsername: EditText  // Mengubah dari etEmail ke etUsername
     private lateinit var etPassword: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,22 +26,17 @@ class LoginActivity : AppCompatActivity() {
 
         // Inisialisasi view dari layout
         btnLogin = findViewById(R.id.btnlogin)
-        etEmail = findViewById(R.id.etEmail)
+        etUsername = findViewById(R.id.etUsername)  // Menggunakan EditText untuk username
         etPassword = findViewById(R.id.etPassword)
 
         btnLogin.setOnClickListener {
-            val email = etEmail.text.toString().trim()
+            val username = etUsername.text.toString().trim()  // Ambil username
             val password = etPassword.text.toString().trim()
 
             // Validasi input
-            if (email.isEmpty()) {
-                etEmail.error = "Email harus diisi"
-                etEmail.requestFocus()
-                return@setOnClickListener
-            }
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                etEmail.error = "Email tidak valid"
-                etEmail.requestFocus()
+            if (username.isEmpty()) {
+                etUsername.error = "Username harus diisi"
+                etUsername.requestFocus()
                 return@setOnClickListener
             }
             if (password.isEmpty() || password.length < 6) {
@@ -51,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             // Proses login dengan memeriksa data di Firestore
-            loginUser(email, password)
+            loginUser(username, password)
         }
 
         // Inisialisasi TextView untuk berpindah ke SignUpActivity
@@ -62,10 +57,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun loginUser(email: String, password: String) {
-        // Cari pengguna berdasarkan email dan password di Firestore
+    private fun loginUser(username: String, password: String) {
+        // Cari pengguna berdasarkan username dan password di Firestore
         firestore.collection("users")
-            .whereEqualTo("email", email)
+            .whereEqualTo("username", username)
             .whereEqualTo("password", password)
             .get()
             .addOnSuccessListener { documents ->
@@ -73,22 +68,15 @@ class LoginActivity : AppCompatActivity() {
                     val document = documents.documents[0]
                     val level = document.getBoolean("level") ?: false  // Ambil nilai level, default false jika null
 
-                    if (level) {
-                        // Jika level adalah true, pindah ke HomeTechActivity
-                        Intent(this@LoginActivity, HomeTechActivity::class.java).also { intent ->
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                        }
-                    } else {
-                        // Jika level adalah false, pindah ke HomeActivity
-                        Intent(this@LoginActivity, HomeActivity::class.java).also { intent ->
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                        }
+                    val targetActivity = if (level) HomeTechActivity::class.java else HomeActivity::class.java
+                    val intent = Intent(this@LoginActivity, targetActivity).apply {
+                        putExtra("username", username)  // Kirim username sebagai extra
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
+                    startActivity(intent)
                 } else {
                     // Jika tidak ditemukan, tampilkan pesan kesalahan
-                    Toast.makeText(this, "Email atau password salah", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Username atau password salah", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->

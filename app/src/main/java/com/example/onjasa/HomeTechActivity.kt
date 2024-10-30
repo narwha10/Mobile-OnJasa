@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onjasa.databinding.ActivityHomeTechBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -16,6 +17,9 @@ class HomeTechActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val username = intent.getStringExtra("username")
+        Toast.makeText(this, "Welcome $username", Toast.LENGTH_SHORT).show()
+
         binding = ActivityHomeTechBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -25,7 +29,7 @@ class HomeTechActivity : AppCompatActivity() {
         val serviceSubtitle: TextView = binding.serviceSubtitle // Use binding to access views
 
         // Menetapkan teks sebagai contoh
-        serviceTitle.text = "Halo, Galnigga"
+        serviceTitle.text = "Halo, $username"
         serviceSubtitle.text = "Kamu login sebagai Teknisi"
 
         // Set onClick listener for the profile picture to navigate to ProfileActivity
