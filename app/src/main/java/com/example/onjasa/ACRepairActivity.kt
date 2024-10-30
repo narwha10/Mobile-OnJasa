@@ -161,10 +161,12 @@ class ACRepairActivity : AppCompatActivity() {
                 Log.d("Firestore", "Order added with ID: ${documentReference.id}")
                 Toast.makeText(this, "Order berhasil!", Toast.LENGTH_SHORT).show()
 
-                // Proceed to LoadingOrderActivity with technician details
+                // Proceed to LoadingOrderActivity with technician details and username
                 val intent = Intent(this, LoadingOrderActivity::class.java).apply {
                     putExtra("TECHNICIAN_NAME", nama)
                     putExtra("TECHNICIAN_PRICE", harga)
+                    putExtra("USERNAME", username) // Send the username
+                    putExtra("ORDER_ID", documentReference.id) // Optionally send the order ID
                 }
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)

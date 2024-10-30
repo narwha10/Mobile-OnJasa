@@ -152,7 +152,7 @@
         android:backgroundTint="@color/green"
         android:padding="15sp"
         android:rotationX="5"
-        android:text="Back To Home"
+        android:text="Cek Status"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -47,7 +47,7 @@ class LoadingOrderActivity : AppCompatActivity() {
         val backToHomeButton: Button = findViewById(R.id.button)
         backToHomeButton.setOnClickListener {
             // Intent to switch to HomeActivity
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, ACPaymentActivity::class.java)
             startActivity(intent)
             finish() // Close LoadingOrderActivity so it doesn't return when the back button is pressed
         }
