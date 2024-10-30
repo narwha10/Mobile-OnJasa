@@ -22,15 +22,6 @@
             android:exported="false"
             android:theme="@style/Theme.OnJasa" />
         <activity
-            android:name=".Chatin_Activity2"
-            android:exported="false" />
-        <activity
-            android:name=".chat_inActivity2"
-            android:exported="false" />
-        <activity
-            android:name=".chatActivity2"
-            android:exported="false" />
-        <activity
             android:name=".ACPaymentActivity"
             android:exported="false" />
         <activity
