@@ -59,6 +59,9 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation ("com.google.firebase:firebase-database-ktx:20.5.0")
 
     implementation(libs.androidx.preference.ktx)
     implementation(libs.firebase.database.ktx)

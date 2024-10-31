@@ -19,32 +19,32 @@
         <!-- Deklarasi aktivitas -->
         <activity
             android:name=".HomeTechActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/Theme.OnJasa" />
         <activity
             android:name=".ACPaymentActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MapViewActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".OrderListActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".GetStartedActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".OrderACRepairActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ACRepairActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".LoadingOrderActivity"
-            android:exported="false" />
+            android:exported="true" />
 
         <!-- Halaman utama -->
         <activity

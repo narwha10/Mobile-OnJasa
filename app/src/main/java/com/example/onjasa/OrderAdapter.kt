@@ -3,17 +3,15 @@ package com.example.onjasa
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class Order(
-    val title: String,
-    val time: String,
-    val iconResId: Int // ID resource untuk ikon
-)
+class OrderAdapter(private var orders: List<Pair<String, String>>) : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
 
-class OrderAdapter(private var orders: List<Order>) : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
+    class OrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: TextView = itemView.findViewById(R.id.tvOrderTitle)
+        val time: TextView = itemView.findViewById(R.id.tvOrderTime)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_order, parent, false)
@@ -21,24 +19,15 @@ class OrderAdapter(private var orders: List<Order>) : RecyclerView.Adapter<Order
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        val order = orders[position]
-        holder.tvOrderTitle.text = order.title
-        holder.tvOrderTime.text = order.time
-        holder.ivIcon.setImageResource(order.iconResId)
+        val (title, time) = orders[position]
+        holder.title.text = title
+        holder.time.text = time
     }
 
-    override fun getItemCount(): Int {
-        return orders.size
-    }
+    override fun getItemCount(): Int = orders.size
 
-    fun updateOrders(newOrders: List<Order>) {
+    fun updateOrders(newOrders: List<Pair<String, String>>) {
         orders = newOrders
         notifyDataSetChanged()
-    }
-
-    class OrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvOrderTitle: TextView = itemView.findViewById(R.id.tvOrderTitle)
-        val tvOrderTime: TextView = itemView.findViewById(R.id.tvOrderTime)
-        val ivIcon: ImageView = itemView.findViewById(R.id.ivIcon)
     }
 }

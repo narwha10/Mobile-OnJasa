@@ -2,92 +2,132 @@ package com.example.onjasa
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 
 class OrderListActivity : AppCompatActivity() {
 
+    private lateinit var database: DatabaseReference
+    private var ongoingOrders = mutableListOf<Pair<String, String>>() // List untuk menyimpan judul dan waktu
+    private var historyOrders = mutableListOf<Pair<String, String>>() // List untuk menyimpan judul dan waktu
+    private lateinit var username: String
     private lateinit var orderAdapter: OrderAdapter
-    private var ongoingOrders = listOf(
-        Order("AC Installation", "Today, 11:30 AM", R.drawable.easy_installation__1_)
-
-    )
-
-    private var historyOrders = listOf(
-        Order("AC Service", "Last week, 9:00 AM", R.drawable.maintenance_tools),
-        Order("AC Wash", "2 weeks ago, 1:00 PM", R.drawable.spray),
-        Order("AC Repair", "Yesterday, 3:00 PM", R.drawable.maintenance_tools)
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
 
+        // Ambil username dari Intent
+        username = intent.getStringExtra("username") ?: ""
+
+        val tvOrderTitle: TextView = findViewById(R.id.tvOrderTitle)
+        tvOrderTitle.text = "Order by: $username"
+
+        database = FirebaseDatabase.getInstance().getReference("orders")
+        setupRecyclerView()
+        setupOrderFilters()
+
+        loadOrders(username)
+
+        // Set listener untuk klik pada tvOrderTitle
+        tvOrderTitle.setOnClickListener {
+            Log.d("OrderListActivity", "tvOrderTitle clicked.")
+            handleOrderClick(username)
+        }
+    }
+
+    private fun setupRecyclerView() {
         val rvOrders = findViewById<RecyclerView>(R.id.rvOrders)
         rvOrders.layoutManager = LinearLayoutManager(this)
-
-        // Initial data with ongoing orders
         orderAdapter = OrderAdapter(ongoingOrders)
         rvOrders.adapter = orderAdapter
+    }
 
+    private fun setupOrderFilters() {
         val tvOngoing = findViewById<TextView>(R.id.tvShowOngoing)
         val tvHistory = findViewById<TextView>(R.id.tvShowHistory)
 
-        // Inisialisasi: Set teks Ongoing berwarna biru dan History berwarna hitam
-        tvOngoing.setTextColor(getColor(R.color.biru))
-        tvHistory.setTextColor(getColor(R.color.black))
-
-        // Set click listeners to change the displayed data and color
         tvOngoing.setOnClickListener {
-            // Set Ongoing Orders
-            tvOngoing.setTextColor(getColor(R.color.biru))
-            tvHistory.setTextColor(getColor(R.color.black))
-
             orderAdapter.updateOrders(ongoingOrders)
         }
 
         tvHistory.setOnClickListener {
-            // Set History Orders
-            tvHistory.setTextColor(getColor(R.color.biru))  // Set warna teks History jadi biru
-            tvOngoing.setTextColor(getColor(R.color.black)) // Set warna teks Ongoing jadi hitam
-
-            orderAdapter.updateOrders(historyOrders)  // Update orders to history
-        }
-
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
-
-        // Set listener untuk navigasi
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                    true
-                }
-                R.id.activity -> {
-
-                    true
-                }
-                R.id.chat -> {
-                    // Handle Chat navigation (jika perlu)
-                    true
-                }
-                R.id.navigation_profile -> {
-                    val intent = Intent(this@OrderListActivity, ProfileActivity::class.java)
-                    startActivity(intent)
-
-                    true
-                }
-                else -> false
-            }
+            orderAdapter.updateOrders(historyOrders)
         }
     }
 
+    private fun loadOrders(username: String) {
+        database.orderByChild("order_by").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                ongoingOrders.clear()
+                historyOrders.clear()
+                Log.d("OrderListActivity", "Found ${snapshot.childrenCount} orders for user $username.")
 
+                for (orderSnapshot in snapshot.children) {
+                    val orderStatus = orderSnapshot.child("status").getValue(String::class.java) ?: ""
+                    val title = orderSnapshot.child("order_by").getValue(String::class.java) ?: "No title"
+                    val time = "Today, 11:30 AM" // Waktu yang diasumsikan untuk semua order
+
+                    Log.d("OrderListActivity", "Order title: $title, status: $orderStatus")
+
+                    if (orderStatus == "processing") {
+                        ongoingOrders.add(Pair(title, time))
+                    } else if (orderStatus == "utiwi") {
+                        historyOrders.add(Pair(title, time))
+                    }
+                }
+
+                orderAdapter.updateOrders(ongoingOrders)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("OrderListActivity", "Database error: ${error.message}")
+            }
+        })
+    }
+
+    private fun handleOrderClick(username: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("orders")
+            .whereEqualTo("order_by", username)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.isEmpty) {
+                    Log.w("OrderListActivity", "No orders found for user: $username")
+                    return@addOnSuccessListener
+                }
+
+                for (document in querySnapshot.documents) {
+                    val orderStatus = document.getString("status")
+
+                    Log.d("OrderListActivity", "Order status found: $orderStatus")
+
+                    when (orderStatus) {
+                        "processing" -> {
+                            val intent = Intent(this@OrderListActivity, LoadingOrderActivity::class.java)
+                            startActivity(intent)
+                            return@addOnSuccessListener // Menghentikan eksekusi setelah navigasi
+                        }
+                        "utiwi" -> {
+                            val intent = Intent(this@OrderListActivity, ACPaymentActivity::class.java)
+                            startActivity(intent)
+                            return@addOnSuccessListener // Menghentikan eksekusi setelah navigasi
+                        }
+                        else -> {
+                            Log.w("OrderListActivity", "Unknown status: $orderStatus")
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("OrderListActivity", "Error getting documents: ", exception)
+            }
+    }
 
 
 }

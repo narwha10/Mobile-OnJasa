@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
 
 class HomeActivity : AppCompatActivity() {
 
@@ -16,14 +17,20 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        FirebaseApp.initializeApp(this)
 
         // Menemukan elemen UI
         usernameTextView = findViewById(R.id.username_text)
         profilePicture = findViewById(R.id.profile_picture)
 
-        // Mengambil username dari Intent
+        // Ambil username dari Intent
         val username = intent.getStringExtra("username") ?: "Guest"
-        usernameTextView.text = "Hello, $username" // Tampilkan "Hello, [username]" atau "Hello, Guest" jika null
+
+        usernameTextView = findViewById(R.id.username_text)
+        profilePicture = findViewById(R.id.profile_picture)
+
+        // Tampilkan username
+        usernameTextView.text = "Hello, $username"
 
         // Set listener untuk notifikasi
         val notification: ImageView = findViewById(R.id.notification)
@@ -68,19 +75,15 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Inisialisasi BottomNavigationView
+        // Setup BottomNavigationView
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
-
-        // Set listener untuk navigasi
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_home -> {
-                    // Handle Home navigation (jika perlu)
-                    true
-                }
+                R.id.navigation_home -> true
                 R.id.activity -> {
-                    // Pindah ke OrderListActivity
+                    // Pindah ke OrderListActivity dengan mengirimkan username
                     val intent = Intent(this@HomeActivity, OrderListActivity::class.java)
+                    intent.putExtra("username", username)
                     startActivity(intent)
                     true
                 }
