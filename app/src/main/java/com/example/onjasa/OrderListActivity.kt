@@ -29,9 +29,6 @@ class OrderListActivity : AppCompatActivity() {
         tvOrderTitle.text = "Order by: $username"
 
         database = FirebaseDatabase.getInstance().getReference("orders")
-        setupRecyclerView()
-        setupOrderFilters()
-
         loadOrders(username)
 
         // Set listener untuk klik pada tvOrderTitle
@@ -41,25 +38,7 @@ class OrderListActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupRecyclerView() {
-        val rvOrders = findViewById<RecyclerView>(R.id.rvOrders)
-        rvOrders.layoutManager = LinearLayoutManager(this)
-        orderAdapter = OrderAdapter(ongoingOrders)
-        rvOrders.adapter = orderAdapter
-    }
 
-    private fun setupOrderFilters() {
-        val tvOngoing = findViewById<TextView>(R.id.tvShowOngoing)
-        val tvHistory = findViewById<TextView>(R.id.tvShowHistory)
-
-        tvOngoing.setOnClickListener {
-            orderAdapter.updateOrders(ongoingOrders)
-        }
-
-        tvHistory.setOnClickListener {
-            orderAdapter.updateOrders(historyOrders)
-        }
-    }
 
     private fun loadOrders(username: String) {
         database.orderByChild("order_by").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {

@@ -62,6 +62,7 @@ dependencies {
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation ("com.google.firebase:firebase-database-ktx:20.5.0")
+    implementation ("androidx.cardview:cardview:1.0.0")
 
     implementation(libs.androidx.preference.ktx)
     implementation(libs.firebase.database.ktx)
