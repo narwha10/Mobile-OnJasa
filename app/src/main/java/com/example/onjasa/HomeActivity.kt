@@ -89,7 +89,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.activity -> {
                     // Pindah ke OrderListActivity dengan mengirimkan username
                     val intent = Intent(this@HomeActivity, OrderListActivity::class.java)
-                    intent.putExtra("username", username)
+                    intent.putExtra("USERNAME", username)
                     startActivity(intent)
                     true
                 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -21,6 +22,8 @@ class LoadingOrderActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var orderId: String
     private lateinit var username: String
+    private lateinit var technicianName: String
+    private lateinit var technicianPrice: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +35,8 @@ class LoadingOrderActivity : AppCompatActivity() {
 
         // Retrieve username, technician name, and price from Intent
         username = intent.getStringExtra("USERNAME") ?: "Guest" // Initialize username from Intent
-        val technicianName = intent.getStringExtra("TECHNICIAN_NAME") ?: "Tidak ada Nama Teknisi"
-        val technicianPrice = intent.getStringExtra("TECHNICIAN_PRICE") ?: "Tidak ada Harga"
+        technicianName = intent.getStringExtra("TECHNICIAN_NAME") ?: ""
+        technicianPrice = intent.getStringExtra("TECHNICIAN_PRICE") ?: ""
         orderId = intent.getStringExtra("ORDER_ID") ?: "default_order_id"
 
         // Find TextViews and set text
@@ -41,8 +44,16 @@ class LoadingOrderActivity : AppCompatActivity() {
         val priceTextView: TextView = findViewById(R.id.hargaTeknisi)
         countdownTextView = findViewById(R.id.countdownTextView)
 
+        // Set the technician name and price
         nameTextView.text = technicianName
         priceTextView.text = technicianPrice
+
+        // Check if both name and price are empty
+        if (technicianName.isEmpty() && technicianPrice.isEmpty()) {
+            // Hide the entire constraintLayout
+            val constraintLayout: View = findViewById(R.id.constraintLayout)
+            constraintLayout.visibility = View.GONE
+        }
 
         // Set up countdown timer for 5 minutes (300,000 milliseconds)
         startCountdown(300000)
@@ -50,7 +61,6 @@ class LoadingOrderActivity : AppCompatActivity() {
         // Find button and set OnClickListener
         val backToHomeButton: Button = findViewById(R.id.button)
         backToHomeButton.setOnClickListener {
-            // Show Toast to confirm that the username is being sent
             handleOrderClick(username) // Call the function to handle order click logic
         }
 
@@ -124,6 +134,8 @@ class LoadingOrderActivity : AppCompatActivity() {
                         "processing" -> {
                             val intent = Intent(this@LoadingOrderActivity, LoadingOrderActivity::class.java)
                             intent.putExtra("USERNAME", username) // Pass username
+                            intent.putExtra("TECHNICIAN_NAME", technicianName) // Pass technician name
+                            intent.putExtra("TECHNICIAN_PRICE", technicianPrice) // Pass technician price
                             startActivity(intent)
                             finish()
                             return@addOnSuccessListener // Stop execution after navigation
@@ -131,6 +143,8 @@ class LoadingOrderActivity : AppCompatActivity() {
                         "utiwi" -> {
                             val intent = Intent(this@LoadingOrderActivity, ACPaymentActivity::class.java)
                             intent.putExtra("USERNAME", username) // Pass username
+                            intent.putExtra("TECHNICIAN_NAME", technicianName) // Pass technician name
+                            intent.putExtra("TECHNICIAN_PRICE", technicianPrice) // Pass technician price
                             startActivity(intent)
                             finish()
                             return@addOnSuccessListener // Stop execution after navigation

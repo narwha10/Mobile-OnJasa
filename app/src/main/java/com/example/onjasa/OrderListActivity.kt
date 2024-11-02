@@ -1,112 +1,71 @@
 package com.example.onjasa
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 
 class OrderListActivity : AppCompatActivity() {
 
-    private lateinit var database: DatabaseReference
-    private var ongoingOrders = mutableListOf<Pair<String, String>>() // List untuk menyimpan judul dan waktu
-    private var historyOrders = mutableListOf<Pair<String, String>>() // List untuk menyimpan judul dan waktu
+    private lateinit var orderHistoryTextView: TextView
     private lateinit var username: String
-    private lateinit var orderAdapter: OrderAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
 
-        // Ambil username dari Intent
-        username = intent.getStringExtra("username") ?: ""
+        // Retrieve username from Intent
+        username = intent.getStringExtra("USERNAME") ?: "Guest" // Default to "Guest"
+        Log.d("OrderListActivity", "Received username: $username") // Logging untuk memverifikasi username
 
-        val tvOrderTitle: TextView = findViewById(R.id.tvOrderTitle)
-        tvOrderTitle.text = "Order by: $username"
+        // Initialize TextView to display order history
+        orderHistoryTextView = findViewById(R.id.orderHistoryTextView)
 
-        database = FirebaseDatabase.getInstance().getReference("orders")
-        loadOrders(username)
-
-        // Set listener untuk klik pada tvOrderTitle
-        tvOrderTitle.setOnClickListener {
-            Log.d("OrderListActivity", "tvOrderTitle clicked.")
-            handleOrderClick(username)
-        }
+        // Load and display order history for the user
+        loadOrderHistory(username)
     }
 
-
-
-    private fun loadOrders(username: String) {
-        database.orderByChild("order_by").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                ongoingOrders.clear()
-                historyOrders.clear()
-                Log.d("OrderListActivity", "Found ${snapshot.childrenCount} orders for user $username.")
-
-                for (orderSnapshot in snapshot.children) {
-                    val orderStatus = orderSnapshot.child("status").getValue(String::class.java) ?: ""
-                    val title = orderSnapshot.child("order_by").getValue(String::class.java) ?: "No title"
-                    val time = "Today, 11:30 AM" // Waktu yang diasumsikan untuk semua order
-
-                    Log.d("OrderListActivity", "Order title: $title, status: $orderStatus")
-
-                    if (orderStatus == "processing") {
-                        ongoingOrders.add(Pair(title, time))
-                    } else if (orderStatus == "utiwi") {
-                        historyOrders.add(Pair(title, time))
-                    }
-                }
-
-                orderAdapter.updateOrders(ongoingOrders)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("OrderListActivity", "Database error: ${error.message}")
-            }
-        })
-    }
-
-    private fun handleOrderClick(username: String) {
+    private fun loadOrderHistory(username: String) {
         val db = FirebaseFirestore.getInstance()
         db.collection("orders")
             .whereEqualTo("order_by", username)
             .get()
             .addOnSuccessListener { querySnapshot ->
+                Log.d("OrderListActivity", "Number of orders found: ${querySnapshot.size()}") // Logging jumlah pesanan yang ditemukan
+
                 if (querySnapshot.isEmpty) {
                     Log.w("OrderListActivity", "No orders found for user: $username")
+                    orderHistoryTextView.text = "No order history available."
                     return@addOnSuccessListener
                 }
 
+                val orderHistoryBuilder = StringBuilder()
+                var foundRelevantOrder = false // Flag to check if we found relevant orders
+
                 for (document in querySnapshot.documents) {
                     val orderStatus = document.getString("status")
+                    Log.d("OrderListActivity", "Order ID: ${document.id}, Status found: $orderStatus")
 
-                    Log.d("OrderListActivity", "Order status found: $orderStatus")
-
-                    when (orderStatus) {
-                        "processing" -> {
-                            val intent = Intent(this@OrderListActivity, LoadingOrderActivity::class.java)
-                            startActivity(intent)
-                            return@addOnSuccessListener // Menghentikan eksekusi setelah navigasi
-                        }
-                        "utiwi" -> {
-                            val intent = Intent(this@OrderListActivity, ACPaymentActivity::class.java)
-                            startActivity(intent)
-                            return@addOnSuccessListener // Menghentikan eksekusi setelah navigasi
-                        }
-                        else -> {
-                            Log.w("OrderListActivity", "Unknown status: $orderStatus")
-                        }
+                    // Only show orders with status "done" or "canceled"
+                    if (orderStatus != null && (orderStatus == "done" || orderStatus == "canceled")) {
+                        foundRelevantOrder = true // Set flag to true if we find a relevant order
+                        orderHistoryBuilder.append("Order ID: ${document.id}, Status: $orderStatus\n")
+                    } else {
+                        Log.w("OrderListActivity", "Skipping order with unknown or irrelevant status: $orderStatus")
                     }
+                }
+
+                // Display the accumulated order history
+                orderHistoryTextView.text = if (foundRelevantOrder) {
+                    orderHistoryBuilder.toString()
+                } else {
+                    "No completed or canceled orders."
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e("OrderListActivity", "Error getting documents: ", exception)
+                orderHistoryTextView.text = "Failed to load order history."
             }
     }
-
-
 }
