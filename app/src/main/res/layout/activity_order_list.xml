@@ -24,7 +24,6 @@
         app:cardCornerRadius="8dp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="8dp"
-        app:cardBackgroundColor="@color/ungujanda"
         android:clickable="true"
         android:focusable="true">
 
@@ -34,13 +33,6 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-
-            <ImageView
-                android:id="@+id/ivIcon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/easy_installation__1_"
-                android:layout_gravity="center_vertical" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -58,13 +50,6 @@
                     android:textSize="20sp"
                     android:textColor="@android:color/black"/>
 
-                <TextView
-                    android:id="@+id/tvOrderTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Today, 11:30 AM"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/black"/>
             </LinearLayout>
 
         </LinearLayout>
