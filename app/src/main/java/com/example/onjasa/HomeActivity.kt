@@ -2,8 +2,10 @@ package com.example.onjasa
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,6 +27,10 @@ class HomeActivity : AppCompatActivity() {
 
         // Ambil username dari Intent
         val username = intent.getStringExtra("username") ?: "Guest"
+
+        // Show Toast to confirm the username is received
+        Log.d("HomeActivity", "Received username: $username")
+        Toast.makeText(this, "Welcome, $username", Toast.LENGTH_SHORT).show()
 
         usernameTextView = findViewById(R.id.username_text)
         profilePicture = findViewById(R.id.profile_picture)
