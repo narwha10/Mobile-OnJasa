@@ -2,163 +2,140 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
+    android:paddingBottom="?attr/actionBarSize"
     tools:context=".OrderACRepairActivity">
 
     <!-- Back Button -->
-
-    <!-- Header (Title and Icon) -->
-
-    <!-- Service Image -->
-
-    <!-- Location Text -->
     <ImageView
         android:id="@+id/imageViewBack"
         android:layout_width="35dp"
         android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
-        android:contentDescription="Back button"
+        android:contentDescription="@string/back_button"
         android:src="@drawable/arrow"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="0.198"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp" />
 
+    <!-- Header (Icon and Title) -->
     <LinearLayout
         android:id="@+id/layananorder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/imageViewBack"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
-            android:contentDescription="Service icon"
+            android:contentDescription="@string/service_icon"
             app:srcCompat="@drawable/maintenance_tools" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AC Instalation"
+            android:text="@string/ac_installation"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Service Image -->
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="277dp"
-        android:layout_height="303dp"
-        android:layout_marginTop="56dp"
-        android:contentDescription="Service process image"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/service_process_image"
+        app:srcCompat="@drawable/order_processing"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/layananorder"
-        app:srcCompat="@drawable/order_processing" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layananorder"
+        app:layout_constraintDimensionRatio="16:9"
+        android:layout_marginTop="16dp" />
 
+    <!-- Location Text -->
     <TextView
         android:id="@+id/editProfileButton"
-        style="@style/roundedTextBG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:background="@drawable/rounded_textbg"
-        android:gravity="center"
-        android:paddingStart="23sp"
-        android:paddingEnd="23sp"
-        android:text="Medan"
+        android:text="@string/medan"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7"
+        android:gravity="center"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/imageView7"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="12dp" />
 
-    <!-- Teknisi Information -->
+    <!-- Technician Information -->
     <LinearLayout
+        android:id="@+id/teknisiContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/editProfileButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/outline_constraint"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/editProfileButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
+            app:shapeAppearanceOverlay="@style/roundedProfileImage" />
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/outline_constraint"
-            android:padding="15dp">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView2"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:shapeAppearanceOverlay="@style/roundedProfileImage" />
-
-            <LinearLayout
-                android:id="@+id/contentCardTeknisi"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/namaTeknisi"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginStart="16dp">
+                android:text="@string/raden_warren_buffet"
+                android:textSize="23sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/namaTeknisi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Raden Warren Buffet"
-                    android:textColor="@color/black"
-                    android:textSize="23sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/hargaTeknisi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="JL. Negro Kusuma No.69AH, Medan Petisah"
-                    android:textColor="@color/black"
-                    android:textSize="19sp" />
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/hargaTeknisi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/jl_negro_kusuma_no_69ah_medan_petisah"
+                android:textSize="19sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Make Order Button -->
     <Button
         android:id="@+id/btnMakeOrder"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/green"
-        android:text="Make Order"
-        android:textSize="25sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/make_order"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="@color/green"
+        android:padding="16dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="16dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

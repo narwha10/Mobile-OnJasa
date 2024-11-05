@@ -19,6 +19,7 @@
             android:id="@+id/ivIcon"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/ac_repair_icon"
             android:src="@drawable/easy_installation__1_"
             android:layout_gravity="center_vertical" />
 
@@ -33,7 +34,7 @@
                 android:id="@+id/tvOrderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AC Repair"
+                android:text="@string/ac_repair"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:textColor="@android:color/black"/>
@@ -42,7 +43,7 @@
                 android:id="@+id/tvOrderTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today, 11:30 AM"
+                android:text="@string/today_11_30_am"
                 android:textSize="16sp"
                 android:textColor="@android:color/black"/>
         </LinearLayout>

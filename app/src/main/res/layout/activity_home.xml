@@ -19,9 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="Profile Picture"
-        android:clipToOutline="true"/>
-
+        android:clipToOutline="true"
+        android:contentDescription="@string/profile_picture" />
 
     <!-- Notification Icon -->
     <ImageView
@@ -33,34 +32,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="20dp"
-        android:contentDescription="Notification" />
+        android:contentDescription="@string/notification" />
 
     <!-- Title -->
     <TextView
         android:id="@+id/service_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="what service"
+        android:text="@string/what_service"
         android:textSize="24sp"
         android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/profile_picture"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp" />
 
     <TextView
         android:id="@+id/service_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="are you looking for?"
+        android:text="@string/are_you_looking_for"
         android:textSize="24sp"
         android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/service_title"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="4dp" />
 
-    <!-- AC Repair Button -->
+    <!-- CardView Templates -->
     <androidx.cardview.widget.CardView
         android:id="@+id/ac_repair_card"
         android:layout_width="0dp"
@@ -75,32 +74,31 @@
         app:layout_constraintTop_toBottomOf="@id/service_subtitle">
 
         <LinearLayout
-            android:id="@+id/menuACRepair"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_gravity="right|top"
-                android:contentDescription="AC Repair Icon"
+                android:contentDescription="@string/ac_repair_icon"
                 android:src="@drawable/maintenance_tools" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="AC Repair"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/ac_repair"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:gravity="center" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <!-- AC Installation Button -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/ac_installation_card"
         android:layout_width="0dp"
@@ -115,33 +113,31 @@
         app:layout_constraintTop_toBottomOf="@id/service_subtitle">
 
         <LinearLayout
-            android:id="@+id/menuACInstallation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="60dp"
-                android:layout_height="58dp"
-                android:src="@drawable/easy_installation"
-
-                android:contentDescription="AC Installation Icon"
-                android:layout_gravity="right"/>
+                android:layout_height="60dp"
+                android:contentDescription="@string/ac_installation_icon"
+                android:src="@drawable/easy_installation" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="AC Installation"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/ac_installation"
                 android:textSize="16sp"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:gravity="center" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <!-- AC Maintenance Button -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/ac_maintenance_card"
         android:layout_width="0dp"
@@ -156,32 +152,31 @@
         app:layout_constraintTop_toBottomOf="@id/ac_repair_card">
 
         <LinearLayout
-            android:id="@+id/menuACMaintenance"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_gravity="right"
-                android:contentDescription="AC Maintenance Icon"
+                android:contentDescription="@string/ac_maintenance_icon"
                 android:src="@drawable/ac" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="46dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="AC Maintenance"
-                android:textColor="@color/black"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/ac_maintenance"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <!-- AC Wash Button -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/ac_wash_card"
         android:layout_width="0dp"
@@ -196,34 +191,32 @@
         app:layout_constraintTop_toBottomOf="@id/ac_installation_card">
 
         <LinearLayout
-            android:id="@+id/menuACWash"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:contentDescription="AC Wash Icon"
-                android:src="@drawable/spray"
-                android:layout_gravity="right"/>
+                android:contentDescription="@string/ac_wash_icon"
+                android:src="@drawable/spray" />
 
-    <TextView
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="AC Wash"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/ac_wash"
                 android:textSize="16sp"
-                android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:gravity="center" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-
-        <!-- Bottom Navigation View -->
+    <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -237,11 +230,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.991"
         app:menu="@menu/bottom_navigation_menu" />
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

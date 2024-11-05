@@ -6,6 +6,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onjasa.models.Order
+import com.example.onjasa.models.OrderAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class OrderListActivity : AppCompatActivity() {

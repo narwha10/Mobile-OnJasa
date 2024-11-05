@@ -1,6 +1,7 @@
 [versions]
 agp = "8.6.0"
 converterGson = "2.9.0"
+corekit = "2.3.3"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -18,12 +19,15 @@ firebaseAuthKtx = "23.0.0"
 okhttp = "4.9.3"
 osmdroidAndroid = "6.1.13"
 retrofit = "2.9.0"
+uikit = "2.3.3"
 volley = "1.2.1"
 preferenceKtx = "1.2.1"
+billing = "1.0.0-alpha11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+corekit = { module = "com.midtrans.sdk.corekit:corekit", version.ref = "corekit" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 google-firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
@@ -41,8 +45,10 @@ firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx",
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+uikit = { module = "com.midtrans.sdk.uikit:uikit", version.ref = "uikit" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
+billing = { group = "com.google.androidbrowserhelper", name = "billing", version.ref = "billing" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

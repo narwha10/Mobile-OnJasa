@@ -2,6 +2,7 @@ package com.example.onjasa
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,13 @@ class NotificationActivity : AppCompatActivity() {
             val intent = Intent(this@NotificationActivity, HomeActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
+
+        val btnAccept: Button = findViewById(R.id.accept_button)
+
+        btnAccept.setOnClickListener{
+            val intent= Intent(this@NotificationActivity, ACPaymentActivity::class.java)
+            startActivity(intent)
         }
     }
 }
