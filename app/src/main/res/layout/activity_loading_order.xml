@@ -57,7 +57,7 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/waiting_technician_approve"
+                android:text="Waiting technician approve..."
                 android:textSize="15sp"
                 tools:layout_editor_absoluteX="12dp"
                 tools:layout_editor_absoluteY="524dp" />
@@ -66,7 +66,7 @@
                 android:id="@+id/countdownTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/_05_00"
+                android:text="05:00"
                 android:textAlignment="textEnd"
                 android:textSize="15sp" />
 
@@ -100,7 +100,7 @@
                     android:id="@+id/namaTeknisi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/raden_warren"
+                    android:text="Raden Warren"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -109,7 +109,7 @@
                     android:id="@+id/hargaTeknisi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/rp_25_000"
+                    android:text="Rp.25.000"
                     android:textColor="@color/black"
                     android:textSize="19sp"
                     app:layout_constraintTop_toBottomOf="@+id/namaTeknisi"
@@ -152,7 +152,7 @@
         android:backgroundTint="@color/green"
         android:padding="15sp"
         android:rotationX="5"
-        android:text="@string/back_to_home"
+        android:text="Cek Status"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -167,12 +167,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/loading_order"
+        android:text="Loading Order"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"
         tools:layout_editor_absoluteX="105dp"
-        tools:layout_editor_absoluteY="34dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="34dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

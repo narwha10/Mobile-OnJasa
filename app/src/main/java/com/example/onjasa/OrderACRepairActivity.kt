@@ -1,4 +1,3 @@
-// OrderACRepairActivity.kt
 package com.example.onjasa
 
 import android.annotation.SuppressLint
@@ -9,12 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
 
 class OrderACRepairActivity : AppCompatActivity() {
+
+    private lateinit var username: String // Menyimpan username dari Intent
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,10 +21,15 @@ class OrderACRepairActivity : AppCompatActivity() {
 
         // Receive data from HomeActivity
         val serviceType = intent.getStringExtra("service_type")
+        username = intent.getStringExtra("username") ?: "Guest" // Ambil username, default ke "Guest"
 
         // Update the header TextView and ImageView based on the received data
         val serviceTitleTextView: TextView = findViewById(R.id.textView5)
         serviceTitleTextView.text = serviceType ?: "Service"  // Default to "Service" if null
+
+        // Set username in the TextView with ID 'namaLu'
+        val usernameTextView: TextView = findViewById(R.id.namaLu)
+        usernameTextView.text = "$username" // Menampilkan username
 
         val serviceImageView: ImageView = findViewById(R.id.imageView5)
         val imageResId: Int = when (serviceType) {
@@ -53,6 +55,7 @@ class OrderACRepairActivity : AppCompatActivity() {
             val intent = Intent(this@OrderACRepairActivity, ACRepairActivity::class.java)
             intent.putExtra("header_title", serviceTitleTextView.text.toString())  // Pass header text
             intent.putExtra("header_image", imageResId)  // Pass image resource ID
+            intent.putExtra("username", username) // Pass username ke ACRepairActivity
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }

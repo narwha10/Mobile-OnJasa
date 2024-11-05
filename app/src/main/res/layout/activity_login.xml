@@ -24,7 +24,7 @@
         android:id="@+id/tvSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/haven_t_an_account_sign_up"
+        android:text="Haven't an account? Sign Up"
         android:textColor="@android:color/holo_blue_light"
         android:clickable="true"
         android:focusable="true"
@@ -63,15 +63,14 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:ignore="MissingConstraints">
+            android:orientation="vertical">
 
 
             <EditText
-                android:id="@+id/etEmail"
+                android:id="@+id/etUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_your_email"
+                android:hint="Enter your username"
                 android:inputType="textEmailAddress"
                 android:padding="16dp"
                 android:layout_marginTop="10dp"
@@ -83,7 +82,7 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_your_password"
+                android:hint="Enter your password"
                 android:inputType="textPassword"
                 android:padding="16dp"
                 android:layout_marginTop="10dp"
@@ -105,7 +104,7 @@
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/material_dynamic_secondary10"
             android:padding="10dp"
-            android:text="@string/sign_in"
+            android:text="Sign in"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

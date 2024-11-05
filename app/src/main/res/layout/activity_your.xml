@@ -103,8 +103,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="@color/ungujanda"
-
+        android:background="@drawable/outline_constraint"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="185dp">
 
