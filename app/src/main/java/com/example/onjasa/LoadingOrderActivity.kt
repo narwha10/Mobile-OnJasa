@@ -10,41 +10,49 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class LoadingOrderActivity : AppCompatActivity() {
 
     private lateinit var countdownTextView: TextView
+    private lateinit var database: DatabaseReference
+    private lateinit var orderId: String // Variable to store the order ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_loading_order)
 
-        // Ambil nama teknisi dan harga dari Intent
+        // Initialize Firebase Database reference
+        database = FirebaseDatabase.getInstance().reference
+
+        // Retrieve technician name and price from Intent
         val technicianName = intent.getStringExtra("TECHNICIAN_NAME") ?: "Tidak ada Nama Teknisi"
         val technicianPrice = intent.getStringExtra("TECHNICIAN_PRICE") ?: "Tidak ada Harga"
+        orderId = intent.getStringExtra("ORDER_ID") ?: "default_order_id" // Retrieve order ID from Intent
 
-        // Temukan TextViews dan atur teks
+        // Find TextViews and set text
         val nameTextView: TextView = findViewById(R.id.namaTeknisi)
         val priceTextView: TextView = findViewById(R.id.hargaTeknisi)
-        countdownTextView = findViewById(R.id.countdownTextView) // Pastikan ID ini ada di layout
+        countdownTextView = findViewById(R.id.countdownTextView) // Ensure this ID exists in the layout
 
         nameTextView.text = technicianName
         priceTextView.text = technicianPrice
 
-        // Mengatur countdown timer selama 5 menit (300.000 milidetik)
+        // Set up countdown timer for 5 minutes (300,000 milliseconds)
         startCountdown(300000)
 
-        // Temukan tombol dan atur OnClickListener
+        // Find button and set OnClickListener
         val backToHomeButton: Button = findViewById(R.id.button)
         backToHomeButton.setOnClickListener {
-            // Intent untuk berpindah ke HomeActivity
+            // Intent to switch to HomeActivity
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
-            finish() // Menutup LoadingOrderActivity agar tidak kembali ke layar ini saat tombol back ditekan
+            finish() // Close LoadingOrderActivity so it doesn't return when the back button is pressed
         }
 
-        // Atur insets untuk tampilan edge-to-edge
+        // Set insets for edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -63,14 +71,35 @@ class LoadingOrderActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 countdownTextView.text = "Waktu Habis!"
-                // Menampilkan Toast
+                // Show Toast message
                 Toast.makeText(this@LoadingOrderActivity, "Order Canceled", Toast.LENGTH_SHORT).show()
 
-                // Intent untuk berpindah ke HomeActivity
+                // Update Firebase to change the order status to "canceled"
+                updateOrderStatus(orderId, "canceled")
+
+                // Intent to switch to HomeActivity
                 val intent = Intent(this@LoadingOrderActivity, HomeActivity::class.java)
                 startActivity(intent)
-                finish() // Menutup LoadingOrderActivity agar tidak kembali ke layar ini saat tombol back ditekan
+                finish() // Close LoadingOrderActivity so it doesn't return when the back button is pressed
             }
         }.start()
+    }
+
+    private fun updateOrderStatus(orderId: String, status: String) {
+        // Update Firebase database to set order status to "canceled"
+        database.child("orders").child(orderId).child("status").setValue(status)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Status updated successfully
+                    Toast.makeText(this, "Order status updated to $status", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Handle the error
+                    Toast.makeText(this, "Failed to update order status", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle the failure
+                Toast.makeText(this, "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

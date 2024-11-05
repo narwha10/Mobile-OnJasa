@@ -18,20 +18,42 @@
         android:networkSecurityConfig="@xml/network_security_config">
 
         <activity
+            android:name=".NewPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" /> <!-- Deklarasi aktivitas -->
+        <activity
+            android:name=".HomeTechActivity"
+            android:exported="false"
+            android:theme="@style/Theme.OnJasa" />
+        <activity
             android:name=".ACPaymentActivity"
             android:exported="false" />
         <activity
             android:name=".MapViewActivity"
             android:exported="false" />
-        <activity android:name=".OrderListActivity" />
-        <activity android:name=".GetStartedActivity" />
-        <activity android:name=".OrderACRepairActivity" />
-        <activity android:name=".ACRepairActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".LoadingOrderActivity" />
+        <activity
+            android:name=".OrderListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GetStartedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrderACRepairActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ACRepairActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoadingOrderActivity"
+            android:exported="false" /> <!-- Halaman utama -->
         <activity
             android:name=".HomeActivity"
-            android:exported="true" /> <!-- LoginActivity sebagai halaman utama -->
+            android:exported="true" /> <!-- LoginActivity sebagai launcher -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
