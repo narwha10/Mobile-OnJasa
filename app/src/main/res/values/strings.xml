@@ -45,4 +45,8 @@
     </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="today_11_30_am">Today, 11:30 AM</string>
+    <string name="ac_installation">AC Installation</string>
+    <string name="ac_wash">AC Wash</string>
+    <string name="ac_repair">AC Repair</string>
 </resources>
