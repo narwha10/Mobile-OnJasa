@@ -25,8 +25,8 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="52dp"
-        android:layout_height="47dp"
+        android:layout_width="42dp"
+        android:layout_height="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
@@ -65,10 +65,10 @@
     <Button
         android:id="@+id/filledButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="29sp"
         android:layout_marginTop="1dp"
         android:backgroundTint="@color/black"
-        android:paddingTop="3sp"
+        android:paddingTop="1sp"
         android:paddingBottom="3sp"
         android:text="Become a tekhnician"
         android:textSize="14sp"
