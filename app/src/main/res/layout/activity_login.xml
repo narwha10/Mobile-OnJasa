@@ -72,9 +72,11 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter your username"
                 android:inputType="textEmailAddress"
+                android:background="@drawable/edittext_border"
+                android:drawablePadding="8dp"
                 android:padding="16dp"
+                android:drawableStart="@drawable/ic_user"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/black"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -85,8 +87,10 @@
                 android:hint="Enter your password"
                 android:inputType="textPassword"
                 android:padding="16dp"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="8dp"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/black"
+                android:background="@drawable/edittext_border"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
