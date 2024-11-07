@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_margin="10dp"
+    android:gravity="center_vertical"
+    android:clipToPadding="false"
+    android:elevation="4dp"
+    android:background="@drawable/outline_constraint">
+
+    <ImageView
+        android:id="@+id/paymentIcon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/dana" />
+
+    <TextView
+        android:id="@+id/paymentName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:text="@string/dana"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/paymentPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rp120_000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+</LinearLayout>

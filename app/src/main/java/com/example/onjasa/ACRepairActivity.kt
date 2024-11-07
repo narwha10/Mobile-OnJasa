@@ -27,6 +27,8 @@ class ACRepairActivity : AppCompatActivity() {
     private lateinit var hargaTeknisiTextView2: TextView
     private lateinit var hargaTeknisiTextView3: TextView
 
+    private lateinit var username: String
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +74,9 @@ class ACRepairActivity : AppCompatActivity() {
         val contentCardTeknisi1: LinearLayout = findViewById(R.id.contentCardTeknisi)
         val contentCardTeknisi2: LinearLayout = findViewById(R.id.contentCardTeknisi2)
         val contentCardTeknisi3: LinearLayout = findViewById(R.id.contentCardTeknisi3)
+
+        // Ambil username dari Intent
+        username = intent.getStringExtra("username") ?: "Guest"
 
         // Retrieve data from Firestore
         db.collection("technician")
@@ -145,6 +150,7 @@ class ACRepairActivity : AppCompatActivity() {
             "technician_name" to nama,
             "technician_price" to harga,
             "order_timestamp" to Date(),
+            "order_by" to username, // Gunakan username yang diambil dari Intent
             "status" to "processing" // or "pending"
         )
 
@@ -155,10 +161,12 @@ class ACRepairActivity : AppCompatActivity() {
                 Log.d("Firestore", "Order added with ID: ${documentReference.id}")
                 Toast.makeText(this, "Order berhasil!", Toast.LENGTH_SHORT).show()
 
-                // Proceed to LoadingOrderActivity with technician details
+                // Proceed to LoadingOrderActivity with technician details and username
                 val intent = Intent(this, LoadingOrderActivity::class.java).apply {
                     putExtra("TECHNICIAN_NAME", nama)
                     putExtra("TECHNICIAN_PRICE", harga)
+                    putExtra("USERNAME", username) // Send the username
+                    putExtra("ORDER_ID", documentReference.id) // Optionally send the order ID
                 }
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)

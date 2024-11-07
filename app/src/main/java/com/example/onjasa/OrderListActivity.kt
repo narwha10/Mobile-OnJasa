@@ -1,93 +1,71 @@
 package com.example.onjasa
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
 
 class OrderListActivity : AppCompatActivity() {
 
-    private lateinit var orderAdapter: OrderAdapter
-    private var ongoingOrders = listOf(
-        Order("AC Installation", "Today, 11:30 AM", R.drawable.easy_installation__1_)
-
-    )
-
-    private var historyOrders = listOf(
-        Order("AC Service", "Last week, 9:00 AM", R.drawable.maintenance_tools),
-        Order("AC Wash", "2 weeks ago, 1:00 PM", R.drawable.spray),
-        Order("AC Repair", "Yesterday, 3:00 PM", R.drawable.maintenance_tools)
-    )
+    private lateinit var orderHistoryTextView: TextView
+    private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
 
-        val rvOrders = findViewById<RecyclerView>(R.id.rvOrders)
-        rvOrders.layoutManager = LinearLayoutManager(this)
+        // Retrieve username from Intent
+        username = intent.getStringExtra("USERNAME") ?: "Guest" // Default to "Guest"
+        Log.d("OrderListActivity", "Received username: $username") // Logging untuk memverifikasi username
 
-        // Initial data with ongoing orders
-        orderAdapter = OrderAdapter(ongoingOrders)
-        rvOrders.adapter = orderAdapter
+        // Initialize TextView to display order history
+        orderHistoryTextView = findViewById(R.id.orderHistoryTextView)
 
-        val tvOngoing = findViewById<TextView>(R.id.tvShowOngoing)
-        val tvHistory = findViewById<TextView>(R.id.tvShowHistory)
-
-        // Inisialisasi: Set teks Ongoing berwarna biru dan History berwarna hitam
-        tvOngoing.setTextColor(getColor(R.color.biru))
-        tvHistory.setTextColor(getColor(R.color.black))
-
-        // Set click listeners to change the displayed data and color
-        tvOngoing.setOnClickListener {
-            // Set Ongoing Orders
-            tvOngoing.setTextColor(getColor(R.color.biru))
-            tvHistory.setTextColor(getColor(R.color.black))
-
-            orderAdapter.updateOrders(ongoingOrders)
-        }
-
-        tvHistory.setOnClickListener {
-            // Set History Orders
-            tvHistory.setTextColor(getColor(R.color.biru))  // Set warna teks History jadi biru
-            tvOngoing.setTextColor(getColor(R.color.black)) // Set warna teks Ongoing jadi hitam
-
-            orderAdapter.updateOrders(historyOrders)  // Update orders to history
-        }
-
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
-
-        // Set listener untuk navigasi
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                    true
-                }
-                R.id.activity -> {
-
-                    true
-                }
-                R.id.chat -> {
-                    // Handle Chat navigation (jika perlu)
-                    true
-                }
-                R.id.navigation_profile -> {
-                    val intent = Intent(this@OrderListActivity, ProfileActivity::class.java)
-                    startActivity(intent)
-
-                    true
-                }
-                else -> false
-            }
-        }
+        // Load and display order history for the user
+        loadOrderHistory(username)
     }
 
+    private fun loadOrderHistory(username: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("orders")
+            .whereEqualTo("order_by", username)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                Log.d("OrderListActivity", "Number of orders found: ${querySnapshot.size()}") // Logging jumlah pesanan yang ditemukan
 
+                if (querySnapshot.isEmpty) {
+                    Log.w("OrderListActivity", "No orders found for user: $username")
+                    orderHistoryTextView.text = "No order history available."
+                    return@addOnSuccessListener
+                }
 
+                val orderHistoryBuilder = StringBuilder()
+                var foundRelevantOrder = false // Flag to check if we found relevant orders
 
+                for (document in querySnapshot.documents) {
+                    val orderStatus = document.getString("status")
+                    Log.d("OrderListActivity", "Order ID: ${document.id}, Status found: $orderStatus")
+
+                    // Only show orders with status "done" or "canceled"
+                    if (orderStatus != null && (orderStatus == "done" || orderStatus == "canceled")) {
+                        foundRelevantOrder = true // Set flag to true if we find a relevant order
+                        orderHistoryBuilder.append("Order ID: ${document.id}, Status: $orderStatus\n")
+                    } else {
+                        Log.w("OrderListActivity", "Skipping order with unknown or irrelevant status: $orderStatus")
+                    }
+                }
+
+                // Display the accumulated order history
+                orderHistoryTextView.text = if (foundRelevantOrder) {
+                    orderHistoryBuilder.toString()
+                } else {
+                    "No completed or canceled orders."
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("OrderListActivity", "Error getting documents: ", exception)
+                orderHistoryTextView.text = "Failed to load order history."
+            }
+    }
 }

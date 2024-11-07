@@ -12,7 +12,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profile"
+        android:text="@string/profile"
         android:textColor="@color/black"
         android:textSize="35sp"
         android:textStyle="bold"
@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="UK El Besok"
+        android:text="@string/uk_el_besok"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,28 +70,12 @@
         android:backgroundTint="@color/black"
         android:paddingTop="3sp"
         android:paddingBottom="3sp"
-        android:text="Edit Profile"
+        android:text="@string/edit_profile"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        android:paddingTop="8dp"
-        app:itemIconSize="30dp"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@android:color/transparent"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.991"
-        app:menu="@menu/bottom_navigation_menu" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -110,7 +94,7 @@
             style="@style/TransparentButtonWithOutline"
             android:layout_width="333dp"
             android:layout_height="55dp"
-            android:text="Prefrence"
+            android:text="@string/prefrence"
             android:textAlignment="textStart"
             android:textSize="20sp"
             app:icon="@drawable/ic_pref"
@@ -125,7 +109,7 @@
             style="@style/TransparentButtonWithOutline"
             android:layout_width="333dp"
             android:layout_height="55dp"
-            android:text="Help"
+            android:text="@string/help"
             android:textAlignment="textStart"
             android:textSize="20sp"
             app:icon="@drawable/ic_help"
@@ -139,7 +123,7 @@
             style="@style/TransparentButtonWithOutline"
             android:layout_width="333dp"
             android:layout_height="55dp"
-            android:text="Logout"
+            android:text="@string/logout"
             android:textAlignment="textStart"
             android:textSize="20sp"
             app:icon="@drawable/ic_logout"
@@ -147,6 +131,19 @@
             app:iconTint="#000000" />
 
     </LinearLayout>
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:paddingTop="8dp"
+        app:itemIconSize="30dp"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@android:color/transparent"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
