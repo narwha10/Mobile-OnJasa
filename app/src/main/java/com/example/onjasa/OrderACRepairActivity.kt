@@ -31,7 +31,7 @@ class OrderACRepairActivity : AppCompatActivity() {
         Log.d("OrderACRepairActivity", "Service Type: $serviceType")
         Log.d("OrderACRepairActivity", "Username: $username")
 
-        // Mengatur teks header dan gambar berdasarkan service type
+        // Mengatur teks header dan gambar berdasarkan jenis layanan
         val serviceTitleTextView: TextView = findViewById(R.id.textView5)
         serviceTitleTextView.text = serviceType ?: "Service"
 
@@ -68,6 +68,7 @@ class OrderACRepairActivity : AppCompatActivity() {
             intent.putExtra("header_title", serviceTitleTextView.text.toString())
             intent.putExtra("header_image", imageResId)
             intent.putExtra("username", username)
+            intent.putExtra("button_id", "filledButton")
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
@@ -91,8 +92,9 @@ class OrderACRepairActivity : AppCompatActivity() {
             intent.putExtra("header_title", serviceTitleTextView.text.toString())
             intent.putExtra("header_image", imageResId)
             intent.putExtra("username", username)
-            intent.putExtra("etalamat", alamat)
-            intent.putExtra("etnohp", nohp)
+            intent.putExtra("button_id", "btnMakeOrder")
+            intent.putExtra("etAlamat", alamat)
+            intent.putExtra("etNohp", nohp)
 
             Log.d("OrderACRepairActivity", "Sending data to ACRepairActivity: Alamat: $alamat, No HP: $nohp")
 
@@ -101,4 +103,3 @@ class OrderACRepairActivity : AppCompatActivity() {
         }
     }
 }
-
