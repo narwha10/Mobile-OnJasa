@@ -21,6 +21,8 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var etUsername: EditText
+    private lateinit var etAlamat: EditText
+    private lateinit var etNohp: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,21 +34,25 @@ class SignUpActivity : AppCompatActivity() {
         btnregister = findViewById(R.id.btnregister)
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
-        etUsername = findViewById(R.id.etUsername)  // Additional username input
+        etUsername = findViewById(R.id.etUsername)
+        etAlamat = findViewById(R.id.etAlamat)
+        etNohp = findViewById(R.id.etNohp)
 
-        // Initialize FirebaseAuth and Firestore
+        // Initialize Firestore
         firestore = FirebaseFirestore.getInstance()
 
-        // Event when 'Sign In' TextView is clicked
+        // Navigate to login screen on "Sign In" click
         tvSignIn.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        // Event when register button is clicked
+        // Register button click handler
         btnregister.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
             val username = etUsername.text.toString().trim()
+            val alamat = etAlamat.text.toString().trim()
+            val nohp = etNohp.text.toString().trim()
 
             // Input validation
             if (username.isEmpty()) {
@@ -54,12 +60,17 @@ class SignUpActivity : AppCompatActivity() {
                 etUsername.requestFocus()
                 return@setOnClickListener
             }
-            if (email.isEmpty()) {
-                etEmail.error = "Email harus diisi"
-                etEmail.requestFocus()
+            if (alamat.isEmpty()) {
+                etAlamat.error = "Alamat harus diisi"
+                etAlamat.requestFocus()
                 return@setOnClickListener
             }
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (nohp.isEmpty() || nohp.length != 12 || !nohp.matches(Regex("\\d+"))) {
+                etNohp.error = "Nomor HP harus berisi angka saja dan 12 digit"
+                etNohp.requestFocus()
+                return@setOnClickListener
+            }
+            if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 etEmail.error = "Email tidak valid"
                 etEmail.requestFocus()
                 return@setOnClickListener
@@ -70,10 +81,11 @@ class SignUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            saveUserToDatabase(username, email, password)
+            // Save user data to Firestore
+            saveUserToDatabase(username, alamat, nohp, email, password)
         }
 
-        // Set up window insets for edge-to-edge experience
+        // Set up edge-to-edge layout
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -81,20 +93,23 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveUserToDatabase(username: String, email: String , password: String) {
+    // Function to save user to Firestore
+    private fun saveUserToDatabase(username: String, alamat: String, nohp: String, email: String, password: String) {
         val userId = firestore.collection("users").document().id
         val user = hashMapOf(
             "username" to username,
+            "alamat" to alamat,
+            "nohp" to nohp,
             "email" to email,
             "password" to password,
-            "level" to false // Added 'level' field with default value 'false'
+            "level" to false // Default level set to false
         )
 
         firestore.collection("users").document(userId)
             .set(user)
             .addOnSuccessListener {
                 // Successfully saved, proceed to GetStartedActivity
-                Intent(this@SignUpActivity, GetStartedActivity::class.java).also {
+                Intent(this@SignUpActivity, LoginActivity::class.java).also {
                     it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(it)
                 }

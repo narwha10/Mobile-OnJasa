@@ -35,19 +35,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.055" />
 
+    <!-- ConstraintLayout to contain the LinearLayout for Username to Sign Up -->
+
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="215dp"
+        android:layout_height="250dp"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="88dp"
         android:layout_marginEnd="60dp"
         android:src="@drawable/brie"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- ConstraintLayout to contain the LinearLayout for Username to Sign Up -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -78,9 +78,35 @@
                 android:inputType="textEmailAddress"
                 android:padding="16dp"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/black"
+                android:background="@drawable/edittext_border"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
+
+            <!-- Input for Alamat -->
+            <EditText
+                android:id="@+id/etAlamat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Masukkan Alamat"
+                android:padding="12dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_border"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:inputType="textPostalAddress" />
+
+            <!-- Input for No HP -->
+            <EditText
+                android:id="@+id/etNohp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Masukkan Nomor HP"
+                android:padding="12dp"
+                android:background="@drawable/edittext_border"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:inputType="phone" />
 
             <EditText
                 android:id="@+id/etEmail"
@@ -90,7 +116,7 @@
                 android:inputType="textEmailAddress"
                 android:padding="16dp"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/black"
+                android:background="@drawable/edittext_border"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -102,7 +128,7 @@
                 android:inputType="textPassword"
                 android:padding="16dp"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/black"
+                android:background="@drawable/edittext_border"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
             <!-- Button Section -->
@@ -125,3 +151,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
+
