@@ -100,6 +100,7 @@ class HomeActivity : AppCompatActivity() {
                 }
                 R.id.navigation_profile -> {
                     val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
+                    intent.putExtra("USERNAME", username)
                     startActivity(intent)
                     true
                 }

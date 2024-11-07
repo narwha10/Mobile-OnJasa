@@ -64,13 +64,13 @@
 
     <Button
         android:id="@+id/filledButton"
-        android:layout_width="119dp"
-        android:layout_height="36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:backgroundTint="@color/black"
         android:paddingTop="3sp"
         android:paddingBottom="3sp"
-        android:text="@string/edit_profile"
+        android:text="Become a tekhnician"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

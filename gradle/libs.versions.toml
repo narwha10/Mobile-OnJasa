@@ -2,6 +2,7 @@
 agp = "8.6.0"
 converterGson = "2.9.0"
 corekit = "2.3.3"
+firebaseDatabaseKtx = "21.0.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -29,6 +30,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 corekit = { module = "com.midtrans.sdk.corekit:corekit", version.ref = "corekit" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 google-firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
