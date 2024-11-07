@@ -1,0 +1,415 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Tombol Back -->
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/arrow"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="20dp"
+        android:contentDescription="Back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Judul Halaman -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Chat"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp" />
+
+    <!-- ScrollView untuk menampilkan daftar chat -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- LinearLayout untuk kontainer item chat -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Item Chat 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nama1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hello, aku Galung salam kenal."
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Item Chat 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nama2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi, ada yang bisa aku bantu?"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- item chat 3 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nama4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi, ada yang bisa aku bantu?"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Item Chat 4 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nam4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi, ada yang bisa aku bantu?"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Item Chat 5 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nama5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi, ada yang bisa aku bantu?"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <!-- Item Chat 6 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nama6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi, ada yang bisa aku bantu?"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <!-- Item Chat 7 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nama7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi, ada yang bisa aku bantu?"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Item Chat 8 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ungujanda"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Gambar Profil -->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/circular_image" />
+
+                <!-- Informasi Pengguna dan Chat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Nama Pengguna -->
+                    <TextView
+                        android:id="@+id/nama8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="El Galungskie"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Isi Chat -->
+                    <TextView
+                        android:id="@+id/chat_content8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi, ada yang bisa aku bantu?"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
