@@ -15,60 +15,61 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnJasa"
         tools:targetApi="31">
-
-        <!-- Deklarasi aktivitas -->
+        <activity
+            android:name=".VerificationNewPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NewPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" /> <!-- Deklarasi aktivitas -->
         <activity
             android:name=".HomeTechActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.OnJasa" />
         <activity
             android:name=".ACPaymentActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".MapViewActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".OrderListActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".GetStartedActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".OrderACRepairActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ACRepairActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".LoadingOrderActivity"
-            android:exported="true" />
-
-        <!-- Halaman utama -->
+            android:exported="false" /> <!-- Halaman utama -->
         <activity
             android:name=".HomeActivity"
-            android:exported="true" />
-
-        <!-- LoginActivity sebagai launcher -->
+            android:exported="true" /> <!-- LoginActivity sebagai launcher -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- SignUpActivity untuk halaman registrasi -->
+        </activity> <!-- SignUpActivity untuk halaman registrasi -->
         <activity
             android:name=".SignUpActivity"
             android:exported="true" />
-
         <activity
             android:name=".NotificationActivity"
             android:exported="true" />
-
     </application>
+
 </manifest>
