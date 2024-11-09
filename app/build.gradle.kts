@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
+    implementation ("org.osmdroid:osmdroid-android:6.1.10")
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.google.firebase.auth.ktx)
