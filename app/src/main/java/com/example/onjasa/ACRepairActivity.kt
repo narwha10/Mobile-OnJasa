@@ -61,23 +61,30 @@ class ACRepairActivity : AppCompatActivity() {
 
         username = intent.getStringExtra("username") ?: "Guest"
 
-        // Ambil data alamat dan nohp dari Firestore menggunakan username
-        db.collection("users")
-            .whereEqualTo("username", username)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val userDoc = documents.first()
-                    alamat = userDoc.getString("alamat") ?: "Alamat tidak ditemukan"
-                    nohp = userDoc.getString("nohp") ?: "No HP tidak ditemukan"
-                } else {
-                    Toast.makeText(this, "Pengguna tidak ditemukan", Toast.LENGTH_SHORT).show()
+        // Logika 2: Cek apakah alamat dan nohp dikirim dari OrderACRepairActivity
+        alamat = intent.getStringExtra("alamat")
+        nohp = intent.getStringExtra("nohp")
+
+        // Jika alamat dan nohp tidak ada di Intent, gunakan Logika 1 untuk mengambil dari Firestore
+        if (alamat.isNullOrEmpty() || nohp.isNullOrEmpty()) {
+            // Logika 1: Ambil data alamat dan nohp dari Firestore
+            db.collection("users")
+                .whereEqualTo("username", username)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val userDoc = documents.first()
+                        alamat = userDoc.getString("alamat") ?: "Alamat tidak ditemukan"
+                        nohp = userDoc.getString("nohp") ?: "No HP tidak ditemukan"
+                    } else {
+                        Toast.makeText(this, "Pengguna tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            .addOnFailureListener { e ->
-                Log.e("FirestoreError", "Error getting user data", e)
-                Toast.makeText(this, "Gagal mengambil data pengguna", Toast.LENGTH_SHORT).show()
-            }
+                .addOnFailureListener { e ->
+                    Log.e("FirestoreError", "Error getting user data", e)
+                    Toast.makeText(this, "Gagal mengambil data pengguna", Toast.LENGTH_SHORT).show()
+                }
+        }
 
         // Ambil data teknisi dari Firestore
         db.collection("technician")
@@ -139,6 +146,7 @@ class ACRepairActivity : AppCompatActivity() {
     }
 
     private fun saveOrderToFirestore(nama: String?, harga: String?) {
+        // Logika utama: gunakan data alamat dan nohp dari Intent jika ada
         if (alamat.isNullOrEmpty() || nohp.isNullOrEmpty()) {
             Toast.makeText(this, "Data alamat atau nohp tidak lengkap.", Toast.LENGTH_SHORT).show()
             return
