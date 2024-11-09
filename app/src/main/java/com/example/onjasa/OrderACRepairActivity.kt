@@ -15,8 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 class OrderACRepairActivity : AppCompatActivity() {
 
     private lateinit var username: String
-    private lateinit var etAlamat: EditText
-    private lateinit var etNohp: EditText
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +45,6 @@ class OrderACRepairActivity : AppCompatActivity() {
 
         Log.d("OrderACRepairActivity", "Image Resource ID: $imageResId")
 
-        // Inisialisasi EditText untuk alamat dan nohp
-        etAlamat = findViewById(R.id.etAlamat)
-        etNohp = findViewById(R.id.etNohp)
 
         // Menangani klik tombol Kembali (Back)
         val btnBack: ImageView = findViewById(R.id.imageViewBack)
@@ -61,45 +56,16 @@ class OrderACRepairActivity : AppCompatActivity() {
         }
 
         // Menangani tombol "Use Yours"
-        val btnUseYours: Button = findViewById(R.id.filledButton)
-        btnUseYours.setOnClickListener {
+        val btnMakeOrder: Button = findViewById(R.id.btnMakeOrder)
+        btnMakeOrder.setOnClickListener {
             Log.d("OrderACRepairActivity", "Use Yours button clicked")
             val intent = Intent(this@OrderACRepairActivity, ACRepairActivity::class.java)
             intent.putExtra("header_title", serviceTitleTextView.text.toString())
             intent.putExtra("header_image", imageResId)
             intent.putExtra("username", username)
-            intent.putExtra("button_id", "filledButton")
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
-        // Menangani tombol "Make Order"
-        val btnMakeOrder: Button = findViewById(R.id.btnMakeOrder)
-        btnMakeOrder.setOnClickListener {
-            val alamat = etAlamat.text.toString().trim()
-            val nohp = etNohp.text.toString().trim()
-
-            Log.d("OrderACRepairActivity", "Alamat: $alamat")
-            Log.d("OrderACRepairActivity", "No HP: $nohp")
-
-            if (alamat.isEmpty() || nohp.isEmpty()) {
-                Toast.makeText(this, "Harap isi alamat dan nomor HP!", Toast.LENGTH_SHORT).show()
-                Log.d("OrderACRepairActivity", "Alamat atau No HP kosong")
-                return@setOnClickListener
-            }
-
-            val intent = Intent(this@OrderACRepairActivity, ACRepairActivity::class.java)
-            intent.putExtra("header_title", serviceTitleTextView.text.toString())
-            intent.putExtra("header_image", imageResId)
-            intent.putExtra("username", username)
-            intent.putExtra("button_id", "btnMakeOrder")
-            intent.putExtra("etAlamat", alamat)
-            intent.putExtra("etNohp", nohp)
-
-            Log.d("OrderACRepairActivity", "Sending data to ACRepairActivity: Alamat: $alamat, No HP: $nohp")
-
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-        }
     }
 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -62,32 +61,25 @@ class ACRepairActivity : AppCompatActivity() {
 
         username = intent.getStringExtra("username") ?: "Guest"
 
-        val buttonId = intent.getStringExtra("button_id")
-
-        // Tentukan asal data alamat dan nohp
-        if (buttonId == "filledButton") {
-            db.collection("users")
-                .whereEqualTo("username", username)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val userDoc = documents.first()
-                        alamat = userDoc.getString("alamat") ?: "Alamat tidak ditemukan"
-                        nohp = userDoc.getString("nohp") ?: "No HP tidak ditemukan"
-                    } else {
-                        Toast.makeText(this, "Pengguna tidak ditemukan", Toast.LENGTH_SHORT).show()
-                    }
+        // Ambil data alamat dan nohp dari Firestore menggunakan username
+        db.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val userDoc = documents.first()
+                    alamat = userDoc.getString("alamat") ?: "Alamat tidak ditemukan"
+                    nohp = userDoc.getString("nohp") ?: "No HP tidak ditemukan"
+                } else {
+                    Toast.makeText(this, "Pengguna tidak ditemukan", Toast.LENGTH_SHORT).show()
                 }
-                .addOnFailureListener { e ->
-                    Log.e("FirestoreError", "Error getting user data", e)
-                    Toast.makeText(this, "Gagal mengambil data pengguna", Toast.LENGTH_SHORT).show()
-                }
-        } else if (buttonId == "btnMakeOrder") {
-            alamat = intent.getStringExtra("etalamat")
-            nohp = intent.getStringExtra("etnohp")
-        }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirestoreError", "Error getting user data", e)
+                Toast.makeText(this, "Gagal mengambil data pengguna", Toast.LENGTH_SHORT).show()
+            }
 
-        // Panggil setupCardListener setelah alamat dan nohp terisi
+        // Ambil data teknisi dari Firestore
         db.collection("technician")
             .get()
             .addOnCompleteListener { task ->
