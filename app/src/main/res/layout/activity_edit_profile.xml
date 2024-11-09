@@ -46,6 +46,13 @@
         android:layout_marginTop="32dp"
         android:gravity="center_horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Based on application policy you cannot change username and email."
+            android:padding="20sp"
+            android:textColor="@color/green"/>
+
         <!-- Input for Address -->
         <EditText
             android:id="@+id/etAlamat"
