@@ -3,9 +3,9 @@ package com.example.onjasa
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -20,33 +20,39 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var btnlogout: Button
     private lateinit var filledButton: Button
     private lateinit var usernameTextView: TextView
+    private lateinit var imageView3: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
 
-        // Menerapkan insets untuk layout
+        // Menginisialisasi FirebaseAuth dan FirebaseFirestore
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
+        // Menginisialisasi view
+        btnlogout = findViewById(R.id.btnlogout)
+        filledButton = findViewById(R.id.filledButton)
+        usernameTextView = findViewById(R.id.textView3)
+        imageView3 = findViewById(R.id.imageView3) // Tambahkan inisialisasi ini
+
+        // Menerapkan insets untuk layout utama jika diperlukan
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Inisialisasi FirebaseAuth dan FirebaseFirestore
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
-
-        // Inisialisasi Button logout dan filledButton
-        btnlogout = findViewById(R.id.btnlogout)
-        filledButton = findViewById(R.id.filledButton)
-
-        // Inisialisasi TextView untuk username
-        usernameTextView = findViewById(R.id.textView3)
-
         // Ambil data username dari Intent dan tampilkan di TextView
         val username = intent.getStringExtra("USERNAME")
         usernameTextView.text = username ?: "Username tidak tersedia"
+
+        // Set OnClickListener untuk ImageView untuk membuka EditProfileActivity
+        imageView3.setOnClickListener {
+            val intent = Intent(this@ProfileActivity, EditProfileActivity::class.java)
+            intent.putExtra("USERNAME", username)
+            startActivity(intent)
+        }
 
         // Set OnClickListener untuk button filledButton
         filledButton.setOnClickListener {
