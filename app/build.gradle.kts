@@ -66,9 +66,17 @@ dependencies {
     implementation ("com.midtrans:uikit:2.3.0-SANDBOX")
     implementation ("com.midtrans:uikit:2.0.0")
     implementation ("com.google.android.gms:play-services-maps:19.0.0")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.google.android.gms:play-services-base:18.0.1")
     implementation(libs.billing)
     implementation(libs.androidx.preference.ktx)
     implementation(libs.firebase.database.ktx)
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")  // Retrofit untuk API
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // Untuk konversi JSON ke Kotlin model
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3") // OkHttp untuk logging
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

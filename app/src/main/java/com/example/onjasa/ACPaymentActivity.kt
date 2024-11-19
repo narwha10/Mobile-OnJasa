@@ -1,5 +1,7 @@
 package com.example.onjasa
 
+
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -16,15 +18,25 @@ import com.midtrans.sdk.uikit.SdkUIFlowBuilder
 
 class ACPaymentActivity : AppCompatActivity() {
 
-
+    // Mendeklarasikan variabel untuk menampung data yang diterima
+    private var username: String? = null
+    private var technicianName: String? = null
+    private var technicianPrice: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_acpayment)
 
-        // Inisialisasi SDK Midtrans menggunakan UiKitApi.Builder()
+        // Mengambil data dari Intent yang dikirim oleh LoadingOrderActivity
+        username = intent.getStringExtra("USERNAME")
+        technicianName = intent.getStringExtra("TECHNICIAN_NAME")
+        technicianPrice = intent.getDoubleExtra("TECHNICIAN_PRICE", 0.0)
+
+        // Menambahkan komentar pada bagian lama untuk memberi penjelasan
+        /*
+        // Inisialisasi SDK Midtrans
         SdkUIFlowBuilder.init()
-            .setClientKey("SB-Mid-client-TdLRuoPrprl724bG")
+            .setClientKey("SB-Mid-client-TdLRuoPrprl724bG") // Ganti dengan Client Key yang sesuai
             .setContext(applicationContext)
             .setTransactionFinishedCallback { result ->
                 handleTransactionResult(result)
@@ -34,53 +46,33 @@ class ACPaymentActivity : AppCompatActivity() {
             .setColorTheme(CustomColorTheme("#FFE51255", "#B61548", "#FFE51255"))
             .setLanguage("id")
             .buildSDK()
+        */
 
-
-        // Menangani klik tombol "Bayar"
+        // Fungsi untuk menangani klik tombol "Bayar"
         val btnBayar: Button = findViewById(R.id.btnBayar)
         btnBayar.setOnClickListener {
-            // Ambil nama layanan dan harga layanan dari TextView
-            val namaLayanan = findViewById<TextView>(R.id.namaLayanan).text.toString()
-            val hargaLayanan = findViewById<TextView>(R.id.hargaLayanan).text.toString()
-                .replace(Regex("[^\\d]"), "") // Menghapus semua karakter non-digit
-                .toIntOrNull() ?: 0 // Mengonversi ke Int atau default 0 jika gagal
-
-            if (hargaLayanan <= 0) {
-                Toast.makeText(this, "Harga layanan tidak valid", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            // Hanya mengirimkan data intent ke MapViewActivity
+            val intent = Intent(this, MapViewActivity::class.java).apply {
+                putExtra("USERNAME", username) // Mengirimkan username
+                putExtra("TECHNICIAN_NAME", technicianName) // Mengirimkan nama teknisi
+                putExtra("TECHNICIAN_PRICE", technicianPrice) // Mengirimkan harga teknisi
             }
-
-            // Buat request transaksi untuk Midtrans
-            val transactionRequest = TransactionRequest("OnJasa-${System.currentTimeMillis()}", hargaLayanan.toDouble())
-            val itemDetails = ItemDetails("ServiceItemID", hargaLayanan.toDouble(), 1, namaLayanan)
-            val itemDetailsList = ArrayList<ItemDetails>()
-            itemDetailsList.add(itemDetails)
-            transactionRequest.itemDetails = itemDetailsList
-            setupCustomerDetails(transactionRequest) // Fungsi untuk setup customer
-
-            // Memulai transaksi di UI Midtrans
-            MidtransSDK.getInstance().transactionRequest = transactionRequest
-            MidtransSDK.getInstance().startPaymentUiFlow(this)
+            // Memulai MapViewActivity dengan membawa data
+            startActivity(intent)
         }
     }
 
-    private fun setupCustomerDetails(transactionRequest: TransactionRequest) {
-        val customerDetails = CustomerDetails().apply {
-            customerIdentifier = "RafaelSianturi"
-            phone = "081234567890"
-            firstName = "Rafael"
-            lastName = "Sianturi"
-            email = "rafael@example.com"
-        }
-        transactionRequest.customerDetails = customerDetails
-    }
-
+    // Fungsi untuk menangani hasil transaksi (dikosongkan sementara)
+    /*
     private fun handleTransactionResult(result: TransactionResult?) {
         when (result?.status) {
-            TransactionResult.STATUS_SUCCESS -> Toast.makeText(this, "Transaction Success", Toast.LENGTH_LONG).show()
-            TransactionResult.STATUS_PENDING -> Toast.makeText(this, "Transaction Pending", Toast.LENGTH_LONG).show()
-            TransactionResult.STATUS_FAILED -> Toast.makeText(this, "Transaction Failed", Toast.LENGTH_LONG).show()
-            else -> Toast.makeText(this, "Transaction Canceled or Invalid", Toast.LENGTH_LONG).show()
+            TransactionResult.STATUS_SUCCESS -> Toast.makeText(this, "Transaksi Sukses", Toast.LENGTH_LONG).show()
+            TransactionResult.STATUS_PENDING -> Toast.makeText(this, "Transaksi Tertunda", Toast.LENGTH_LONG).show()
+            TransactionResult.STATUS_FAILED -> Toast.makeText(this, "Transaksi Gagal", Toast.LENGTH_LONG).show()
+            else -> Toast.makeText(this, "Transaksi Dibatalkan atau Tidak Valid", Toast.LENGTH_LONG).show()
         }
     }
+    */
+
 }
+

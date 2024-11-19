@@ -167,6 +167,7 @@ class ACRepairActivity : AppCompatActivity() {
             .addOnSuccessListener { documentReference ->
                 Toast.makeText(this, "Order berhasil!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, LoadingOrderActivity::class.java).apply {
+                    putExtra("USERNAME", username) // Pass username
                     putExtra("ORDER_ID", documentReference.id)
                     putExtra("TECHNICIAN_NAME", nama)
                     putExtra("TECHNICIAN_PRICE", harga)

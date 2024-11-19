@@ -1,106 +1,129 @@
 package com.example.onjasa
 
-import android.animation.ValueAnimator
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.widget.ImageView
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.onjasa.models.GeocodingResult
+import com.example.onjasa.network.NominatimAPI
+import okhttp3.OkHttpClient
 import org.osmdroid.config.Configuration
-import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Polyline
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.onjasa.network.OpenRouteServiceAPI
-import com.example.onjasa.models.RouteResponse
 
 class MapViewActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
-    private lateinit var motorMarker: Marker
+
+    // Menyimpan koordinat lokasi mulai dan tujuan
+    private var startLatitude: Double? = null
+    private var startLongitude: Double? = null
+    private var endLatitude: Double? = null
+    private var endLongitude: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Configuration.getInstance().userAgentValue = packageName
         setContentView(R.layout.map_view)
 
-        mapView = findViewById(R.id.map)
+        // Inisialisasi MapView
+        Configuration.getInstance().userAgentValue = packageName
+        mapView = findViewById(R.id.mapView)
         mapView.setMultiTouchControls(true)
-        mapView.controller.setZoom(15.0)
-        mapView.controller.setCenter(GeoPoint(3.5951956, 98.6722227)) // Pusat Medan
 
-        motorMarker = Marker(mapView).apply {
-            icon = resizeDrawable(R.drawable.motorcycle , 64, 64) // Ikon motor
-            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-        }
-        mapView.overlays.add(motorMarker)
+        // Panggil fungsi untuk mendapatkan koordinat untuk lokasi mulai dan tujuan
+        getCoordinatesFromAddress("Medan")  // Gantilah dengan alamat lokasi mulai
+        getCoordinatesFromAddress("Jalan Walikota")  // Gantilah dengan alamat tujuan
+    }
 
-        fetchRoute() // Panggil API untuk rute
-    }
-    private fun resizeDrawable(drawableRes: Int, width: Int, height: Int): Drawable {
-        val bitmap = BitmapFactory.decodeResource(resources, drawableRes)
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true)
-        return BitmapDrawable(resources, resizedBitmap)
-    }
-    private fun fetchRoute() {
+    private fun getCoordinatesFromAddress(address: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.openrouteservice.org/")
+            .baseUrl("https://nominatim.openstreetmap.org/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor { chain ->
+                        val request = chain.request().newBuilder()
+                            .header("User-Agent", "OnJasa/1.0 (mhfadtz@gmail.com)") // Ganti sesuai kebutuhan
+                            .build()
+                        chain.proceed(request)
+                    }
+                    .build()
+            )
             .build()
 
-        val api = retrofit.create(OpenRouteServiceAPI::class.java)
-        val apiKey = "5b3ce3597851110001cf6248e187f81a49d941f5936e70bd593aea33"
+        val api = retrofit.create(NominatimAPI::class.java)
+        val call = api.getCoordinates(address)
 
-        val call = api.getDirections(
-            apiKey,
-            "98.671722,3.595291", // Mulai
-            "98.676500,3.583979"  // Tujuan
-        )
-
-        call.enqueue(object : Callback<RouteResponse?> {
-            override fun onResponse(call: Call<RouteResponse?>, response: Response<RouteResponse?>) {
+        call.enqueue(object : Callback<List<GeocodingResult>> {
+            override fun onResponse(
+                call: Call<List<GeocodingResult>>,
+                response: Response<List<GeocodingResult>>
+            ) {
                 if (response.isSuccessful && response.body() != null) {
-                    val coordinates = response.body()!!.getCoordinates()
-                    drawRoute(coordinates)
-                    animateMotorAlongRoute(coordinates)
+                    // Log hasil JSON untuk pemeriksaan
+                    val geocodingResults = response.body()
+                    for (result in geocodingResults!!) {
+                        Log.d("Geocoding", "Koordinat: Lat ${result.lat}, Lon ${result.lon}")
+                    }
+
+                    val geocodingResult = geocodingResults[0]
+                    val lat = geocodingResult.lat.toDouble()
+                    val lon = geocodingResult.lon.toDouble()
+
+                    // Menyimpan koordinat sesuai dengan alamat
+                    if (startLatitude == null && startLongitude == null) {
+                        startLatitude = lat
+                        startLongitude = lon
+                        Toast.makeText(
+                            this@MapViewActivity,
+                            "Lokasi Mulai: $lat, $lon",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        endLatitude = lat
+                        endLongitude = lon
+                        Toast.makeText(
+                            this@MapViewActivity,
+                            "Lokasi Tujuan: $lat, $lon",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    // Setelah mendapatkan kedua koordinat, tambahkan marker
+                    if (startLatitude != null && startLongitude != null && endLatitude != null && endLongitude != null) {
+                        addMarker(startLatitude!!, startLongitude!!, "Lokasi Mulai")
+                        addMarker(endLatitude!!, endLongitude!!, "Lokasi Tujuan")
+                    }
+                } else {
+                    Toast.makeText(this@MapViewActivity, "Gagal mendapatkan koordinat", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<RouteResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<List<GeocodingResult>>, t: Throwable) {
                 t.printStackTrace()
+                Toast.makeText(this@MapViewActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    private fun drawRoute(coordinates: List<GeoPoint>) {
-        val polyline = Polyline().apply {
-            setPoints(coordinates)
-            color = -0xff6634 // Warna biru tebal
-            width = 10.0f
-        }
-        mapView.overlays.add(polyline)
-        mapView.invalidate() // Refresh peta
-    }
+    private fun addMarker(latitude: Double, longitude: Double, title: String) {
+        // Pusatkan peta ke lokasi
+        val mapController = mapView.controller
+        mapController.setZoom(15.0)
+        mapController.setCenter(org.osmdroid.util.GeoPoint(latitude, longitude))
 
-    private fun animateMotorAlongRoute(coordinates: List<GeoPoint>) {
-        val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 10000 // 10 detik (sesuaikan durasinya)
-            addUpdateListener { animation ->
-                val fraction = animation.animatedFraction
-                val index = (fraction * (coordinates.size - 1)).toInt()
-                val point = coordinates[index]
+        // Tambahkan marker
+        val marker = Marker(mapView)
+        marker.position = org.osmdroid.util.GeoPoint(latitude, longitude)
+        marker.title = title
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        mapView.overlays.add(marker)
 
-                motorMarker.position = point
-                mapView.controller.setCenter(point)
-                mapView.invalidate()
-            }
-        }
-        animator.start()
+        // Perbarui tampilan peta
+        mapView.invalidate()
     }
 }
