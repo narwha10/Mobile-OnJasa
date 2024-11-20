@@ -1,0 +1,157 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- tombol back' -->
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/arrow"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="20dp"
+        android:contentDescription="Back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Teks 'Your Activity' -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Chat"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImage3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
+            app:shapeAppearanceOverlay="@style/roundedProfileImage" />
+
+        <TextView
+            android:layout_width="198dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/outline_constraint"
+            android:padding="13dp"
+            android:text="Sherlok dong bang, dah pengen banget ketemu ni"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImage6"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
+            app:shapeAppearanceOverlay="@style/roundedProfileImage" />
+
+        <TextView
+            android:layout_width="198dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/outline_constraint"
+            android:padding="13dp"
+            android:text="ga asik lu bang sumpah"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cht2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+
+        <TextView
+            android:layout_width="198dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/outline_constraint"
+            android:padding="13dp"
+            android:text="Sherlok lu bangsat anjer lu pantant"
+            android:textSize="18sp"
+            android:textAlignment="end"
+            android:layout_marginStart="120dp"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImage4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d"
+            app:shapeAppearanceOverlay="@style/roundedProfileImage" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/messageEditText"
+            android:layout_width="331dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_vertical"
+            android:hint="Type a message"
+            tools:layout_editor_absoluteX="40dp"
+            tools:layout_editor_absoluteY="832dp" />
+
+        <ImageView
+            android:id="@+id/imageView11"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            app:srcCompat="@drawable/ic_send" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
