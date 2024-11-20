@@ -19,14 +19,6 @@ import java.util.Date
 
 class ACRepairActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
-
-    private lateinit var namaTeknisiTextView: TextView
-    private lateinit var namaTeknisiTextView2: TextView
-    private lateinit var namaTeknisiTextView3: TextView
-    private lateinit var hargaTeknisiTextView: TextView
-    private lateinit var hargaTeknisiTextView2: TextView
-    private lateinit var hargaTeknisiTextView3: TextView
-
     private lateinit var username: String
 
     @SuppressLint("MissingInflatedId")
@@ -63,98 +55,59 @@ class ACRepairActivity : AppCompatActivity() {
         // Firestore Initialization
         db = FirebaseFirestore.getInstance()
 
-        // Initialize TextViews and Cards
-        namaTeknisiTextView = findViewById(R.id.namaTeknisiTextView)
-        namaTeknisiTextView2 = findViewById(R.id.namaTeknisiTextView2)
-        namaTeknisiTextView3 = findViewById(R.id.namaTeknisiTextView3)
-        hargaTeknisiTextView = findViewById(R.id.hargaTeknisiTextView)
-        hargaTeknisiTextView2 = findViewById(R.id.hargaTeknisiTextView2)
-        hargaTeknisiTextView3 = findViewById(R.id.hargaTeknisiTextView3)
-
-        val contentCardTeknisi1: LinearLayout = findViewById(R.id.contentCardTeknisi)
-        val contentCardTeknisi2: LinearLayout = findViewById(R.id.contentCardTeknisi2)
-        val contentCardTeknisi3: LinearLayout = findViewById(R.id.contentCardTeknisi3)
-
         // Ambil username dari Intent
         username = intent.getStringExtra("username") ?: "Guest"
 
-        // Retrieve data from Firestore
+        setupTeknisiCards()
+    }
+
+    // Menampilkan kartu teknisi dari Firestore
+    private fun setupTeknisiCards() {
+        val contentContainer: LinearLayout = findViewById(R.id.contentContainer)
+
         db.collection("technician")
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val documents = task.result
-                    val namaTeknisiList = mutableListOf<String>()
-                    val hargaTeknisiList = mutableListOf<String>()
+                    var cardCount = 0
 
                     documents?.forEach { document ->
-                        val nama = document.getString("nama")
-                        val harga = document.getString("harga")
+                        if (cardCount < 3) {
+                            val cardView = layoutInflater.inflate(R.layout.card_teknisi, contentContainer, false)
+                            val namaTeknisiTextView: TextView = cardView.findViewById(R.id.namaTeknisi)
+                            val hargaTeknisiTextView: TextView = cardView.findViewById(R.id.hargaTeknisi)
 
-                        if (nama != null && harga != null) {
-                            namaTeknisiList.add(nama)
-                            hargaTeknisiList.add(harga)
-                        } else {
-                            Log.e("FirestoreError", "Missing 'nama' or 'harga' in document: ${document.id}")
+                            val namaTeknisi = document.getString("nama") ?: "Nama tidak tersedia"
+                            val hargaTeknisi = document.getString("harga") ?: "Harga tidak tersedia"
+
+                            namaTeknisiTextView.text = namaTeknisi
+                            hargaTeknisiTextView.text = hargaTeknisi
+
+                            cardView.setOnClickListener {
+                                saveOrderToFirestore(namaTeknisi, hargaTeknisi)
+                            }
+
+                            contentContainer.addView(cardView)
+                            cardCount++
                         }
                     }
-
-                    // Update TextViews with Firestore data
-                    namaTeknisiTextView.text = namaTeknisiList.getOrNull(0) ?: "No data"
-                    namaTeknisiTextView2.text = namaTeknisiList.getOrNull(1) ?: "No data"
-                    namaTeknisiTextView3.text = namaTeknisiList.getOrNull(2) ?: "No data"
-
-                    hargaTeknisiTextView.text = hargaTeknisiList.getOrNull(0) ?: "No data"
-                    hargaTeknisiTextView2.text = hargaTeknisiList.getOrNull(1) ?: "No data"
-                    hargaTeknisiTextView3.text = hargaTeknisiList.getOrNull(2) ?: "No data"
-
-                    // Set up click listeners for cards to select a technician
-                    setClickListeners(
-                        contentCardTeknisi1, namaTeknisiList.getOrNull(0), hargaTeknisiList.getOrNull(0),
-                        contentCardTeknisi2, contentCardTeknisi3
-                    )
-                    setClickListeners(
-                        contentCardTeknisi2, namaTeknisiList.getOrNull(1), hargaTeknisiList.getOrNull(1),
-                        contentCardTeknisi1, contentCardTeknisi3
-                    )
-                    setClickListeners(
-                        contentCardTeknisi3, namaTeknisiList.getOrNull(2), hargaTeknisiList.getOrNull(2),
-                        contentCardTeknisi1, contentCardTeknisi2
-                    )
                 } else {
                     Log.e("FirestoreError", "Error getting documents: ", task.exception)
-                    namaTeknisiTextView.text = "Error loading data"
                 }
             }
     }
 
-    private fun setClickListeners(
-        card: LinearLayout,
-        nama: String?, harga: String?,
-        cardToDisable1: LinearLayout, cardToDisable2: LinearLayout
-    ) {
-        card.setOnClickListener {
-            // Disable other cards
-            cardToDisable1.isEnabled = false
-            cardToDisable2.isEnabled = false
-            card.isEnabled = false // Disable selected card
-
-            // Save order data to Firestore and proceed to LoadingOrderActivity
-            saveOrderToFirestore(nama, harga)
-        }
-    }
-
     private fun saveOrderToFirestore(nama: String?, harga: String?) {
-        // Prepare order data
+        // Prepare order data with username
         val orderData = hashMapOf(
             "technician_name" to nama,
             "technician_price" to harga,
             "order_timestamp" to Date(),
-            "order_by" to username, // Gunakan username yang diambil dari Intent
-            "status" to "processing" // or "pending"
+            "order_by" to username,  // Tambahkan username ke data pesanan
+            "status" to "processing"
         )
 
-        // Save to Firestore in "orders" collection
         db.collection("orders")
             .add(orderData)
             .addOnSuccessListener { documentReference ->
@@ -165,8 +118,7 @@ class ACRepairActivity : AppCompatActivity() {
                 val intent = Intent(this, LoadingOrderActivity::class.java).apply {
                     putExtra("TECHNICIAN_NAME", nama)
                     putExtra("TECHNICIAN_PRICE", harga)
-                    putExtra("USERNAME", username) // Send the username
-                    putExtra("ORDER_ID", documentReference.id) // Optionally send the order ID
+                    putExtra("USERNAME", username)
                 }
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
