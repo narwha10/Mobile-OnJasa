@@ -60,7 +60,7 @@ class MapViewActivity : AppCompatActivity() {
      * Fungsi untuk navigasi ke halaman ChatActivity
      */
     private fun navigateToChatPage(userName: String, technicianName: String) {
-        val intent = Intent(this, ChatActivity::class.java)
+        val intent = Intent(this, ChatIn::class.java)
         intent.putExtra("user_name", userName)
         intent.putExtra("technician_name", technicianName)
         startActivity(intent)
