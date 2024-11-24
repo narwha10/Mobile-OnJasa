@@ -94,11 +94,21 @@
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
-
-
-
             <!-- Button Section -->
         </LinearLayout>
+        <TextView
+            android:id="@+id/forgotPasswordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_light"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Forgot Password?"/>
 
         <Button
             android:id="@+id/btnlogin"
@@ -113,7 +123,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+            app:layout_constraintTop_toBottomOf="@id/forgotPasswordButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
