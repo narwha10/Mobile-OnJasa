@@ -6,8 +6,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onjasa.models.GeocodingResult
 import com.example.onjasa.network.NominatimAPI
+import com.google.firebase.firestore.FirebaseFirestore
 import okhttp3.OkHttpClient
 import org.osmdroid.config.Configuration
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import retrofit2.Call
@@ -19,9 +21,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MapViewActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
 
-    // Menyimpan koordinat lokasi mulai dan tujuan
-    private var startLatitude: Double? = null
-    private var startLongitude: Double? = null
+    // Lokasi mulai (const)
+    private var startLatitude: Double = 3.5833 // Contoh lokasi Medan
+    private var startLongitude: Double = 98.6667 // Contoh lokasi Medan
+
+    // Lokasi tujuan (diambil dari Firestore)
     private var endLatitude: Double? = null
     private var endLongitude: Double? = null
 
@@ -34,9 +38,44 @@ class MapViewActivity : AppCompatActivity() {
         mapView = findViewById(R.id.mapView)
         mapView.setMultiTouchControls(true)
 
-        // Panggil fungsi untuk mendapatkan koordinat untuk lokasi mulai dan tujuan
-        getCoordinatesFromAddress("Medan")  // Gantilah dengan alamat lokasi mulai
-        getCoordinatesFromAddress("Jalan Walikota")  // Gantilah dengan alamat tujuan
+        // Tambahkan marker lokasi mulai
+        Log.d("MapViewActivity", "Menambahkan marker lokasi mulai: $startLatitude, $startLongitude")
+        addMarker(startLatitude, startLongitude, "Lokasi Mulai")
+
+        // Ambil username dari Intent
+        val username = intent.getStringExtra("USERNAME") ?: ""
+        if (username.isEmpty()) {
+            Toast.makeText(this, "Username tidak ditemukan", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // Ambil alamat dari Firestore berdasarkan field "order_by"
+        getEndAddressFromFirebase(username)
+    }
+
+    private fun getEndAddressFromFirebase(username: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("orders")
+            .whereEqualTo("order_by", username) // Periksa berdasarkan field "order_by"
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val alamat = documents.documents[0].getString("alamat")
+                    if (!alamat.isNullOrEmpty()) {
+                        Log.d("MapViewActivity", "Alamat ditemukan: $alamat")
+                        getCoordinatesFromAddress(alamat)
+                    } else {
+                        Toast.makeText(this, "Field alamat tidak ditemukan pada dokumen", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Dokumen tidak ditemukan untuk username: $username", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("MapViewActivity", "Error mendapatkan data Firestore: ${e.message}")
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun getCoordinatesFromAddress(address: String) {
@@ -47,7 +86,7 @@ class MapViewActivity : AppCompatActivity() {
                 OkHttpClient.Builder()
                     .addInterceptor { chain ->
                         val request = chain.request().newBuilder()
-                            .header("User-Agent", "OnJasa/1.0 (mhfadtz@gmail.com)") // Ganti sesuai kebutuhan
+                            .header("User-Agent", "OnJasa/1.0 (mhfadtz@gmail.com)")
                             .build()
                         chain.proceed(request)
                     }
@@ -64,42 +103,27 @@ class MapViewActivity : AppCompatActivity() {
                 response: Response<List<GeocodingResult>>
             ) {
                 if (response.isSuccessful && response.body() != null) {
-                    // Log hasil JSON untuk pemeriksaan
                     val geocodingResults = response.body()
-                    for (result in geocodingResults!!) {
-                        Log.d("Geocoding", "Koordinat: Lat ${result.lat}, Lon ${result.lon}")
-                    }
+                    if (!geocodingResults.isNullOrEmpty()) {
+                        val result = geocodingResults[0]
+                        endLatitude = result.lat.toDouble()
+                        endLongitude = result.lon.toDouble()
 
-                    val geocodingResult = geocodingResults[0]
-                    val lat = geocodingResult.lat.toDouble()
-                    val lon = geocodingResult.lon.toDouble()
-
-                    // Menyimpan koordinat sesuai dengan alamat
-                    if (startLatitude == null && startLongitude == null) {
-                        startLatitude = lat
-                        startLongitude = lon
                         Toast.makeText(
                             this@MapViewActivity,
-                            "Lokasi Mulai: $lat, $lon",
+                            "Lokasi tujuan: ${endLatitude}, ${endLongitude}",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        // Tambahkan marker untuk lokasi tujuan
+                        if (endLatitude != null && endLongitude != null) {
+                            addMarker(endLatitude!!, endLongitude!!, "Lokasi Tujuan")
+                        }
                     } else {
-                        endLatitude = lat
-                        endLongitude = lon
-                        Toast.makeText(
-                            this@MapViewActivity,
-                            "Lokasi Tujuan: $lat, $lon",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    // Setelah mendapatkan kedua koordinat, tambahkan marker
-                    if (startLatitude != null && startLongitude != null && endLatitude != null && endLongitude != null) {
-                        addMarker(startLatitude!!, startLongitude!!, "Lokasi Mulai")
-                        addMarker(endLatitude!!, endLongitude!!, "Lokasi Tujuan")
+                        Toast.makeText(this@MapViewActivity, "Gagal mendapatkan koordinat tujuan", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this@MapViewActivity, "Gagal mendapatkan koordinat", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MapViewActivity, "Gagal mendapatkan respons geocoding", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -111,19 +135,24 @@ class MapViewActivity : AppCompatActivity() {
     }
 
     private fun addMarker(latitude: Double, longitude: Double, title: String) {
-        // Pusatkan peta ke lokasi
-        val mapController = mapView.controller
-        mapController.setZoom(15.0)
-        mapController.setCenter(org.osmdroid.util.GeoPoint(latitude, longitude))
+        Log.d("MapViewActivity", "Menambahkan marker: $title, Latitude: $latitude, Longitude: $longitude")
 
-        // Tambahkan marker
+        // Tambahkan marker baru
         val marker = Marker(mapView)
-        marker.position = org.osmdroid.util.GeoPoint(latitude, longitude)
+        marker.position = GeoPoint(latitude, longitude)
         marker.title = title
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         mapView.overlays.add(marker)
 
         // Perbarui tampilan peta
         mapView.invalidate()
+
+        // Pusatkan peta hanya untuk marker pertama (Lokasi Mulai)
+        if (title == "Lokasi Mulai") {
+            mapView.controller.apply {
+                setZoom(15.0)
+                setCenter(GeoPoint(latitude, longitude))
+            }
+        }
     }
 }
