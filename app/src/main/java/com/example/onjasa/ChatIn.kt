@@ -32,8 +32,8 @@ class ChatIn : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         // Tangkap data dari Intent
-        senderId = intent.getStringExtra("user_name") ?: "Anonymous"
-        receiverId = intent.getStringExtra("technician_name") ?: "Technician"
+        senderId = intent.getStringExtra("USERNAME") ?: "Anonymous"
+        receiverId = intent.getStringExtra("TECHNICIAN_NAME") ?: "Technician"
         userId = senderId // User yang sedang login dianggap sebagai pengirim (sender)
 
         // Inisialisasi RecyclerView dan Adapter
