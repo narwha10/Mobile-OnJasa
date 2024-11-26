@@ -2,131 +2,116 @@ package com.example.onjasa
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onjasa.databinding.ActivityHomeTechBinding
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
 
 class HomeTechActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeTechBinding
     private lateinit var firestore: FirebaseFirestore
 
-    private var currentOrderId: String? = null // Menyimpan ID order saat ini untuk di-update
+    private var currentOrderId: String? = null // Menyimpan ID order saat ini
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val username = intent.getStringExtra("username")
         Toast.makeText(this, "Welcome $username", Toast.LENGTH_SHORT).show()
 
         binding = ActivityHomeTechBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inisialisasi Firebase Firestore
         firestore = FirebaseFirestore.getInstance()
 
-        // Inisialisasi elemen dari layout XML menggunakan binding
-        val profilePicture: ImageView = binding.profilePicture
-        val serviceTitle: TextView = binding.serviceTitle
-        val serviceSubtitle: TextView = binding.serviceSubtitle
-        val incomingNotificationCard: View = binding.incomingNotificationCard // Card untuk notifikasi masuk
-        val noOrdersText: TextView = binding.noOrdersText // TextView untuk "tidak ada order masuk"
-        val orderDescription: TextView = binding.orderDescription // TextView untuk menampilkan deskripsi order
-        val btnAccept: Button = binding.btnAccept // Tombol Accept
-        val btnReject: Button = binding.btnReject // Tombol Reject
+        // Set teks nama teknisi
+        binding.serviceTitle.text = "Halo, $username"
+        binding.serviceSubtitle.text = "Kamu login sebagai Teknisi"
 
-        // Menetapkan teks sebagai contoh
-        serviceTitle.text = "Halo, $username"
-        serviceSubtitle.text = "Kamu login sebagai Teknisi"
-
-        // Set onClick listener untuk profile picture untuk navigate ke ProfileActivity
-        profilePicture.setOnClickListener {
+        // Navigasi ke profil saat gambar diklik
+        binding.profilePicture.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
 
-        // Memanggil fungsi untuk cek orders di Firebase
-        checkIncomingOrders(username, incomingNotificationCard, noOrdersText, orderDescription, btnAccept, btnReject)
+        checkIncomingOrders(username)
     }
 
-    private fun checkIncomingOrders(
-        username: String?,
-        incomingNotificationCard: View,
-        noOrdersText: TextView,
-        orderDescription: TextView,
-        btnAccept: Button,
-        btnReject: Button
-    ) {
+    private fun checkIncomingOrders(username: String?) {
         if (username == null) {
             Toast.makeText(this, "Username tidak ditemukan!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Query untuk mengambil satu order dengan status "processing"
+        // Mendengarkan perubahan data secara real-time
         firestore.collection("orders")
             .whereEqualTo("technician_name", username)
-            .whereEqualTo("status", "processing")
-            .limit(1) // Ambil hanya satu order
-            .get()
-            .addOnSuccessListener { querySnapshot: QuerySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    // Jika ada order untuk teknisi, tampilkan card notifikasi masuk
-                    incomingNotificationCard.visibility = View.VISIBLE
-                    noOrdersText.visibility = View.GONE
+            .whereIn("status", listOf("processing", "otw")) // Memfilter status
+            .limit(1)
+            .addSnapshotListener { querySnapshot, e ->
+                if (e != null) {
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    return@addSnapshotListener
+                }
 
-                    // Ambil nilai dari field "order_by" pada dokumen yang ada
-                    for (document: QueryDocumentSnapshot in querySnapshot) {
-                        currentOrderId = document.id // Simpan ID order saat ini
-                        val orderBy = document.getString("order_by") // Ambil nilai order_by
-                        orderDescription.text = orderBy ?: "Tidak ada informasi order" // Tampilkan informasi order
-                    }
+                if (querySnapshot != null && !querySnapshot.isEmpty) {
+                    for (document in querySnapshot) {
+                        currentOrderId = document.id
+                        val orderBy = document.getString("order_by") ?: "Unknown"
+                        val status = document.getString("status")
 
-                    // Set onClick listeners untuk tombol Accept dan Reject
-                    btnAccept.setOnClickListener {
-                        currentOrderId?.let { orderId ->
-                            updateOrderStatus(orderId, "utiwi") // Update status menjadi "utiwi"
-                        }
-                    }
+                        when (status) {
+                            "processing" -> {
+                                binding.orderCard.visibility = View.VISIBLE
+                                binding.noOrdersText.visibility = View.GONE
+                                binding.orderTitle.text = "New Order Request"
+                                binding.orderDescription.text = orderBy
 
-                    btnReject.setOnClickListener {
-                        currentOrderId?.let { orderId ->
-                            updateOrderStatus(orderId, "canceled") // Update status menjadi "canceled"
+                                binding.actionButtons.visibility = View.VISIBLE
+                                binding.btnAccept.setOnClickListener {
+                                    updateOrderStatus(currentOrderId, "otw")
+                                }
+                                binding.btnReject.setOnClickListener {
+                                    updateOrderStatus(currentOrderId, "rejected")
+                                }
+                            }
+
+                            "otw" -> {
+                                binding.orderCard.visibility = View.VISIBLE
+                                binding.noOrdersText.visibility = View.GONE
+                                binding.orderTitle.text = "Your OnGoing Orders:"
+                                binding.orderDescription.text = orderBy
+
+                                binding.actionButtons.visibility = View.GONE
+                                binding.orderCard.setOnClickListener {
+                                    val intent = Intent(this, MapViewActivity::class.java)
+                                    intent.putExtra("orderId", currentOrderId) // Mengirimkan orderId
+                                    intent.putExtra("USERNAME", username)
+                                    Log.d("MapViewActivity", "Username dikirim: $username")
+                                    startActivity(intent)
+                                }
+                            }
                         }
                     }
                 } else {
-                    // Jika tidak ada order, tampilkan teks "tidak ada order masuk"
-                    incomingNotificationCard.visibility = View.GONE
-                    noOrdersText.visibility = View.VISIBLE
-                    orderDescription.text = "" // Kosongkan order description jika tidak ada order
+                    binding.orderCard.visibility = View.GONE
+                    binding.noOrdersText.visibility = View.VISIBLE
                 }
-            }
-            .addOnFailureListener { e ->
-                // Menangani error
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun updateOrderStatus(orderId: String, newStatus: String) {
+    private fun updateOrderStatus(orderId: String?, newStatus: String) {
+        if (orderId == null) return
+
         firestore.collection("orders").document(orderId)
             .update("status", newStatus)
             .addOnSuccessListener {
-                Toast.makeText(this, "Status order telah diperbarui menjadi $newStatus", Toast.LENGTH_SHORT).show()
-                // Refresh UI atau lakukan hal lain setelah pembaruan
-                checkIncomingOrders(intent.getStringExtra("username"), binding.incomingNotificationCard, binding.noOrdersText, binding.orderDescription, binding.btnAccept, binding.btnReject) // Refresh the incoming orders
+                Toast.makeText(this, "Order updated to $newStatus", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error updating status: ${e.message}", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to update order: ${it.message}", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return true
     }
 }

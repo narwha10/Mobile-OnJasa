@@ -44,36 +44,96 @@ class MapViewActivity : AppCompatActivity() {
 
         // Ambil username dari Intent
         val username = intent.getStringExtra("USERNAME") ?: ""
+        Log.d("MapViewActivity", "Username diterima: $username")
         if (username.isEmpty()) {
             Toast.makeText(this, "Username tidak ditemukan", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        // Ambil alamat dari Firestore berdasarkan field "order_by"
-        getEndAddressFromFirebase(username)
+        // Mulai cek username pada Firestore
+        checkUsernameInOrders(username)
     }
 
-    private fun getEndAddressFromFirebase(username: String) {
+    private fun checkUsernameInOrders(username: String) {
         val db = FirebaseFirestore.getInstance()
+
+        // Cek apakah username ada pada field "order_by"
         db.collection("orders")
-            .whereEqualTo("order_by", username) // Periksa berdasarkan field "order_by"
+            .whereEqualTo("order_by", username)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
+                    // Jika username cocok dengan "order_by", ambil data langsung
                     val alamat = documents.documents[0].getString("alamat")
+                    Log.d("MapViewActivity", "alamat diterima: $alamat")
                     if (!alamat.isNullOrEmpty()) {
-                        Log.d("MapViewActivity", "Alamat ditemukan: $alamat")
+                        Log.d("MapViewActivity", "Username cocok sebagai customer: $alamat")
                         getCoordinatesFromAddress(alamat)
                     } else {
                         Toast.makeText(this, "Field alamat tidak ditemukan pada dokumen", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this, "Dokumen tidak ditemukan untuk username: $username", Toast.LENGTH_SHORT).show()
+                    // Jika tidak cocok di "order_by", cek ke "technician_name"
+                    checkTechnicianForOrder(username)
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("MapViewActivity", "Error mendapatkan data Firestore: ${e.message}")
+                Log.e("MapViewActivity", "Error saat memeriksa field order_by: ${e.message}")
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun checkTechnicianForOrder(username: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        // Cek apakah username ada pada field "technician_name"
+        db.collection("orders")
+            .whereEqualTo("technician_name", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // Jika username cocok dengan "technician_name", ambil data "order_by"
+                    val orderBy = documents.documents[0].getString("order_by")
+                    if (!orderBy.isNullOrEmpty()) {
+                        Log.d("MapViewActivity", "Username cocok sebagai teknisi, mencari data untuk: $orderBy")
+                        // Cari data alamat berdasarkan order_by
+                        getEndAddressFromOrderBy(orderBy)
+                    } else {
+                        Toast.makeText(this, "Field order_by tidak ditemukan pada dokumen", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Username tidak ditemukan di order_by maupun technician_name", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("MapViewActivity", "Error saat memeriksa field technician_name: ${e.message}")
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun getEndAddressFromOrderBy(orderBy: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        // Cari alamat berdasarkan "order_by" yang diperoleh dari teknisi
+        db.collection("orders")
+            .whereEqualTo("order_by", orderBy)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val alamat = documents.documents[0].getString("alamat")
+                    if (!alamat.isNullOrEmpty()) {
+                        Log.d("MapViewActivity", "Alamat ditemukan untuk order_by: $alamat")
+                        getCoordinatesFromAddress(alamat)
+                    } else {
+                        Toast.makeText(this, "Field alamat tidak ditemukan pada dokumen", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Dokumen tidak ditemukan untuk order_by: $orderBy", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("MapViewActivity", "Error saat mendapatkan alamat dari order_by: ${e.message}")
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
