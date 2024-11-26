@@ -1,77 +1,164 @@
 package com.example.onjasa
 
 import android.os.Bundle
-import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.onjasa.models.ChatAdapter
+import com.example.onjasa.models.Message
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
 class ChatIn : AppCompatActivity() {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var chatAdapter: ChatAdapter
+    private lateinit var messageEditText: EditText
+    private lateinit var sendButton: ImageView
+    private lateinit var firestore: FirebaseFirestore
+
+    private var chatId: String? = null
+    private lateinit var userId: String
+    private lateinit var senderId: String
+    private lateinit var receiverId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_chat_in)
 
-        // Terapkan padding Edge-to-Edge untuk root view
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        // Inisialisasi Firebase Firestore
+        firestore = FirebaseFirestore.getInstance()
 
-        // Tangkap data dari Intent (opsional)
-        val userName = intent.getStringExtra("user_name") ?: "Anonymous"
-        val technicianName = intent.getStringExtra("technician_name") ?: "Technician"
+        // Tangkap data dari Intent
+        senderId = intent.getStringExtra("user_name") ?: "Anonymous"
+        receiverId = intent.getStringExtra("technician_name") ?: "Technician"
+        userId = senderId // User yang sedang login dianggap sebagai pengirim (sender)
 
-        // Atur tombol back
-        val btnBack = findViewById<ImageView>(R.id.btnBack)
-        btnBack.setOnClickListener {
+        // Inisialisasi RecyclerView dan Adapter
+        recyclerView = findViewById(R.id.recyclerView)
+        chatAdapter = ChatAdapter(userId = userId)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = chatAdapter
+
+        // Inisialisasi EditText dan Tombol Kirim
+        messageEditText = findViewById(R.id.messageEditText)
+        sendButton = findViewById(R.id.imageView11)
+
+        // Tombol Back
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish() // Kembali ke activity sebelumnya
         }
 
-        // EditText untuk pesan
-        val messageEditText = findViewById<EditText>(R.id.messageEditText)
-        val sendButton = findViewById<ImageView>(R.id.imageView11)
+        // Periksa apakah percakapan sudah ada
+        findOrCreateChat()
 
-        // LinearLayout untuk menambahkan pesan secara dinamis
-        val chatContainer = findViewById<LinearLayout>(R.id.linearLayout9)
-
-        // Tombol kirim pesan
+        // Tambahkan pesan ke chat ketika tombol kirim ditekan
         sendButton.setOnClickListener {
-            val message = messageEditText.text.toString()
-            if (message.isNotBlank()) {
-                addMessageToChat(chatContainer, message, isUser = true)
-                messageEditText.text.clear()
+            val messageText = messageEditText.text.toString()
+            if (messageText.isNotBlank()) {
+                val newMessage = Message(
+                    id = System.currentTimeMillis().toString(),
+                    senderId = senderId,
+                    receiverId = receiverId,
+                    content = messageText,
+                    timestamp = System.currentTimeMillis()
+                )
+                saveMessageToFirestore(newMessage) // Simpan pesan ke Firestore
+                messageEditText.text.clear() // Hapus teks setelah pesan dikirim
+
+                // Scroll RecyclerView ke posisi terakhir (pesan terbaru)
+                recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
             }
         }
     }
 
     /**
-     * Fungsi untuk menambahkan pesan ke chat secara dinamis
+     * Fungsi untuk mencari atau membuat percakapan (chatId)
      */
-    private fun addMessageToChat(chatContainer: LinearLayout, message: String, isUser: Boolean) {
-        val newMessageView = TextView(this)
-        newMessageView.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            if (isUser) {
-                setMargins(120, 16, 16, 16) // Margin untuk pesan pengguna
-            } else {
-                setMargins(16, 16, 120, 16) // Margin untuk pesan teknisi
+    private fun findOrCreateChat() {
+        val chatRef = firestore.collection("chats")
+
+        // Periksa apakah percakapan sudah ada berdasarkan senderId dan receiverId
+        chatRef.whereEqualTo("senderId", senderId)
+            .whereEqualTo("receiverId", receiverId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // Jika dokumen ditemukan, gunakan chatId yang ada
+                    chatId = querySnapshot.documents[0].id
+                    fetchMessagesFromFirestore()
+                } else {
+                    // Jika tidak ditemukan, buat dokumen baru dengan ID otomatis
+                    val chatData = mapOf(
+                        "senderId" to senderId,
+                        "receiverId" to receiverId,
+                        "timestamp" to System.currentTimeMillis()
+                    )
+                    chatRef.add(chatData)
+                        .addOnSuccessListener { documentReference ->
+                            chatId = documentReference.id
+                            fetchMessagesFromFirestore()
+                        }
+                        .addOnFailureListener { e ->
+                            println("Error creating chat: ${e.message}")
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                println("Error finding chat: ${e.message}")
+            }
+    }
+
+    /**
+     * Fungsi untuk menyimpan pesan ke Firestore
+     */
+    private fun saveMessageToFirestore(message: Message) {
+        if (chatId == null) {
+            println("Chat ID is null. Message cannot be saved.")
+            return
+        }
+
+        val messageRef = firestore.collection("chats")
+            .document(chatId!!)
+            .collection("messages")
+
+        messageRef.document(message.id)
+            .set(message)
+            .addOnSuccessListener {
+                println("Message saved successfully!")
+            }
+            .addOnFailureListener { e ->
+                println("Error saving message: ${e.message}")
+            }
+    }
+
+    /**
+     * Fungsi untuk membaca pesan secara real-time dari Firestore
+     */
+    private fun fetchMessagesFromFirestore() {
+        if (chatId == null) {
+            println("Chat ID is null. Cannot fetch messages.")
+            return
+        }
+
+        val messageRef = firestore.collection("chats")
+            .document(chatId!!)
+            .collection("messages")
+            .orderBy("timestamp", Query.Direction.ASCENDING)
+
+        messageRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                println("Error fetching messages: ${e.message}")
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && !snapshot.isEmpty) {
+                val messages = snapshot.toObjects(Message::class.java)
+                chatAdapter.updateMessages(messages)
+                recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
             }
         }
-        newMessageView.setBackgroundResource(R.drawable.outline_constraint)
-        newMessageView.text = message
-        newMessageView.textSize = 18f
-        newMessageView.setPadding(13, 13, 13, 13)
-
-        // Tambahkan pesan ke chat
-        chatContainer.addView(newMessageView)
     }
 }

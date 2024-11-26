@@ -41,7 +41,7 @@ class MapViewActivity : AppCompatActivity() {
         val chatButton = findViewById<Button>(R.id.accept_button)
         chatButton.setOnClickListener {
             // Kirim data ke halaman chat
-            navigateToChatPage("User123", "Teknisi456")
+            navigateToChatPage("jidan", "narwhal")
         }
     }
 

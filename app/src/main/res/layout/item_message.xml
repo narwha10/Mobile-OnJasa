@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:id="@+id/messageContainer"> <!-- Menambahkan ID messageContainer di sini -->
+
+    <!-- Profile Image -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profileImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        app:shapeAppearanceOverlay="@style/roundedProfileImage"
+        android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d" />
+
+    <!-- Message Content -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start">
+
+        <!-- Message Text -->
+        <TextView
+            android:id="@+id/messageContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This is a message"
+            android:padding="10dp"
+            android:background="@drawable/outline_constraint"
+            android:textSize="16sp"
+            android:maxWidth="250dp" />
+    </LinearLayout>
+
+</LinearLayout>
