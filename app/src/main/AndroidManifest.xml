@@ -33,7 +33,7 @@
             android:theme="@style/Theme.OnJasa" />
         <activity
             android:name=".ACPaymentActivity"
-            android:exported="false" />
+            android:launchMode="singleTask"/>
         <activity
             android:name=".MapViewActivity"
             android:exported="false" />

@@ -151,7 +151,7 @@ class ACRepairActivity : AppCompatActivity() {
             Toast.makeText(this, "Data alamat atau nohp tidak lengkap.", Toast.LENGTH_SHORT).show()
             return
         }
-
+        val namaLayanan = intent.getStringExtra("header_title") ?: "No Title"
         val orderData = hashMapOf(
             "technician_name" to nama,
             "technician_price" to harga,
@@ -171,6 +171,7 @@ class ACRepairActivity : AppCompatActivity() {
                     putExtra("ORDER_ID", documentReference.id)
                     putExtra("TECHNICIAN_NAME", nama)
                     putExtra("TECHNICIAN_PRICE", harga)
+                    putExtra("header_title", namaLayanan) // Pass nama layanan
                 }
                 startActivity(intent)
             }
