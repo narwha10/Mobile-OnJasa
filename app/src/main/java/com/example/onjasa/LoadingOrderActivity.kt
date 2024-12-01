@@ -84,6 +84,8 @@ class LoadingOrderActivity : AppCompatActivity() {
             override fun onFinish() {
                 countdownTextView.text = "Waktu Habis!"
                 Toast.makeText(this@LoadingOrderActivity, "Order Canceled", Toast.LENGTH_SHORT).show()
+
+                // Update order status to "canceled"
                 updateOrderStatus(orderId, "canceled")
 
                 // Intent to switch to HomeActivity and pass username
@@ -96,6 +98,7 @@ class LoadingOrderActivity : AppCompatActivity() {
     }
 
     private fun updateOrderStatus(orderId: String, status: String) {
+        // Update status in Firebase Realtime Database
         database.child("orders").child(orderId).child("status").setValue(status)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

@@ -2,8 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/main">
+    android:layout_height="match_parent">
 
     <!-- Tombol Back -->
     <ImageView
@@ -71,4 +70,65 @@
             android:layout_marginStart="10dp"
             app:srcCompat="@drawable/ic_send" />
     </LinearLayout>
+
+    <!-- Pop-up Pesanan Cancel -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/popupCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvPopupTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pesanan Dibatalkan"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tvPopupMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apakah Anda yakin ingin membatalkan pesanan ini?"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <Button
+                    android:id="@+id/btnCancelNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tidak"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnCancelYes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ya" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

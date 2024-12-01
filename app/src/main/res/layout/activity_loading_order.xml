@@ -7,31 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".OrderACRepairActivity">
 
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="200dp"
-        android:layout_height="72dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-    </LinearLayout>
-
+    <!-- ImageView (for the background or logo) -->
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="300dp"
         android:layout_height="302dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="72dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
         app:srcCompat="@drawable/automation" />
 
+    <!-- LinearLayout for countdown and technician details -->
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
@@ -48,6 +36,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
+        <!-- Countdown Timer -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,9 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Waiting technician approve..."
-                android:textSize="15sp"
-                tools:layout_editor_absoluteX="12dp"
-                tools:layout_editor_absoluteY="524dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/countdownTextView"
@@ -72,6 +59,7 @@
 
         </LinearLayout>
 
+        <!-- Layout for technician information -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
@@ -111,11 +99,7 @@
                     android:layout_height="wrap_content"
                     android:text="Rp.25.000"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
-                    app:layout_constraintTop_toBottomOf="@+id/namaTeknisi"
-                    tools:layout_editor_absoluteX="104dp" />
-
-
+                    android:textSize="19sp" />
             </LinearLayout>
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -130,19 +114,10 @@
                 app:layout_constraintVertical_bias="0.666"
                 app:shapeAppearanceOverlay="@style/roundedProfileImage" />
 
-            <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/badge" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </LinearLayout>
 
+    <!-- Button to check order status -->
     <Button
         android:id="@+id/button"
         android:layout_width="370dp"
@@ -162,16 +137,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.978" />
 
+    <!-- Title textView -->
     <TextView
         android:id="@+id/textView5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:layout_weight="1"
         android:text="Loading Order"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="105dp"
-        tools:layout_editor_absoluteY="34dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
