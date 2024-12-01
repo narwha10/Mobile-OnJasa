@@ -2,6 +2,7 @@ package com.example.onjasa
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onjasa.models.GeocodingResult
@@ -20,12 +21,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MapViewActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
+    private lateinit var namaTeknisiTextView: TextView
+    private lateinit var hargaTeknisiTextView: TextView
+    private lateinit var addressTextView: TextView
 
-    // Lokasi mulai (const)
-    private var startLatitude: Double = 3.5833 // Contoh lokasi Medan
-    private var startLongitude: Double = 98.6667 // Contoh lokasi Medan
+    private var startLatitude: Double = 3.5833 // Lokasi mulai (contoh: Medan)
+    private var startLongitude: Double = 98.6667 // Lokasi mulai (contoh: Medan)
 
-    // Lokasi tujuan (diambil dari Firestore)
     private var endLatitude: Double? = null
     private var endLongitude: Double? = null
 
@@ -33,48 +35,50 @@ class MapViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.map_view)
 
-        // Inisialisasi MapView
-        Configuration.getInstance().userAgentValue = packageName
+        // Inisialisasi UI
         mapView = findViewById(R.id.mapView)
+        namaTeknisiTextView = findViewById(R.id.namaTeknisiTextView)
+        hargaTeknisiTextView = findViewById(R.id.hargaTeknisiTextView)
+        addressTextView = findViewById(R.id.address)
+
+        // Konfigurasi MapView
+        Configuration.getInstance().userAgentValue = packageName
         mapView.setMultiTouchControls(true)
 
         // Tambahkan marker lokasi mulai
-        Log.d("MapViewActivity", "Menambahkan marker lokasi mulai: $startLatitude, $startLongitude")
         addMarker(startLatitude, startLongitude, "Lokasi Mulai")
 
         // Ambil username dari Intent
         val username = intent.getStringExtra("USERNAME") ?: ""
-        Log.d("MapViewActivity", "Username diterima: $username")
         if (username.isEmpty()) {
             Toast.makeText(this, "Username tidak ditemukan", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        // Mulai cek username pada Firestore
+        // Mulai proses pengambilan data dari Firestore
         checkUsernameInOrders(username)
     }
 
     private fun checkUsernameInOrders(username: String) {
         val db = FirebaseFirestore.getInstance()
 
-        // Cek apakah username ada pada field "order_by"
         db.collection("orders")
             .whereEqualTo("order_by", username)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    // Jika username cocok dengan "order_by", ambil data langsung
-                    val alamat = documents.documents[0].getString("alamat")
-                    Log.d("MapViewActivity", "alamat diterima: $alamat")
-                    if (!alamat.isNullOrEmpty()) {
-                        Log.d("MapViewActivity", "Username cocok sebagai customer: $alamat")
-                        getCoordinatesFromAddress(alamat)
+                    val technicianName = documents.documents[0].getString("technician_name")
+                    val technicianPrice = documents.documents[0].getString("technician_price")
+                    val address = documents.documents[0].getString("alamat")
+
+                    if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
+                        updateTechnicianInfo(technicianName, technicianPrice, address)
                     } else {
-                        Toast.makeText(this, "Field alamat tidak ditemukan pada dokumen", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Field tidak lengkap dalam dokumen", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    // Jika tidak cocok di "order_by", cek ke "technician_name"
+                    // Jika tidak cocok dengan "order_by", cek "technician_name"
                     checkTechnicianForOrder(username)
                 }
             }
@@ -87,20 +91,19 @@ class MapViewActivity : AppCompatActivity() {
     private fun checkTechnicianForOrder(username: String) {
         val db = FirebaseFirestore.getInstance()
 
-        // Cek apakah username ada pada field "technician_name"
         db.collection("orders")
             .whereEqualTo("technician_name", username)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    // Jika username cocok dengan "technician_name", ambil data "order_by"
-                    val orderBy = documents.documents[0].getString("order_by")
-                    if (!orderBy.isNullOrEmpty()) {
-                        Log.d("MapViewActivity", "Username cocok sebagai teknisi, mencari data untuk: $orderBy")
-                        // Cari data alamat berdasarkan order_by
-                        getEndAddressFromOrderBy(orderBy)
+                    val technicianName = documents.documents[0].getString("technician_name")
+                    val technicianPrice = documents.documents[0].getString("technician_price")
+                    val address = documents.documents[0].getString("alamat")
+
+                    if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
+                        updateTechnicianInfo(technicianName, technicianPrice, address)
                     } else {
-                        Toast.makeText(this, "Field order_by tidak ditemukan pada dokumen", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Field tidak lengkap dalam dokumen", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(this, "Username tidak ditemukan di order_by maupun technician_name", Toast.LENGTH_SHORT).show()
@@ -112,30 +115,14 @@ class MapViewActivity : AppCompatActivity() {
             }
     }
 
-    private fun getEndAddressFromOrderBy(orderBy: String) {
-        val db = FirebaseFirestore.getInstance()
+    private fun updateTechnicianInfo(technicianName: String, technicianPrice: String, address: String) {
+        // Update UI dengan data yang diambil
+        namaTeknisiTextView.text = technicianName
+        hargaTeknisiTextView.text = technicianPrice
+        addressTextView.text = address
 
-        // Cari alamat berdasarkan "order_by" yang diperoleh dari teknisi
-        db.collection("orders")
-            .whereEqualTo("order_by", orderBy)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val alamat = documents.documents[0].getString("alamat")
-                    if (!alamat.isNullOrEmpty()) {
-                        Log.d("MapViewActivity", "Alamat ditemukan untuk order_by: $alamat")
-                        getCoordinatesFromAddress(alamat)
-                    } else {
-                        Toast.makeText(this, "Field alamat tidak ditemukan pada dokumen", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this, "Dokumen tidak ditemukan untuk order_by: $orderBy", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e("MapViewActivity", "Error saat mendapatkan alamat dari order_by: ${e.message}")
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        // Dapatkan koordinat dari alamat
+        getCoordinatesFromAddress(address)
     }
 
     private fun getCoordinatesFromAddress(address: String) {
@@ -171,7 +158,7 @@ class MapViewActivity : AppCompatActivity() {
 
                         Toast.makeText(
                             this@MapViewActivity,
-                            "Lokasi tujuan: ${endLatitude}, ${endLongitude}",
+                            "Lokasi tujuan: $endLatitude, $endLongitude",
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -195,9 +182,6 @@ class MapViewActivity : AppCompatActivity() {
     }
 
     private fun addMarker(latitude: Double, longitude: Double, title: String) {
-        Log.d("MapViewActivity", "Menambahkan marker: $title, Latitude: $latitude, Longitude: $longitude")
-
-        // Tambahkan marker baru
         val marker = Marker(mapView)
         marker.position = GeoPoint(latitude, longitude)
         marker.title = title
@@ -207,7 +191,6 @@ class MapViewActivity : AppCompatActivity() {
         // Perbarui tampilan peta
         mapView.invalidate()
 
-        // Pusatkan peta hanya untuk marker pertama (Lokasi Mulai)
         if (title == "Lokasi Mulai") {
             mapView.controller.apply {
                 setZoom(15.0)
