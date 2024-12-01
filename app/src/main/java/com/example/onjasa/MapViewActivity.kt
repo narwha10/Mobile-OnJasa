@@ -1,12 +1,16 @@
 package com.example.onjasa
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onjasa.models.GeocodingResult
 import com.example.onjasa.network.NominatimAPI
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import okhttp3.OkHttpClient
 import org.osmdroid.config.Configuration
@@ -24,12 +28,14 @@ class MapViewActivity : AppCompatActivity() {
     private lateinit var namaTeknisiTextView: TextView
     private lateinit var hargaTeknisiTextView: TextView
     private lateinit var addressTextView: TextView
+    private lateinit var finishOrderButton: Button
 
     private var startLatitude: Double = 3.5833 // Lokasi mulai (contoh: Medan)
     private var startLongitude: Double = 98.6667 // Lokasi mulai (contoh: Medan)
 
     private var endLatitude: Double? = null
     private var endLongitude: Double? = null
+    private var case1Snapshot: DocumentSnapshot? = null // Menyimpan snapshot dokumen untuk case 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,7 @@ class MapViewActivity : AppCompatActivity() {
         namaTeknisiTextView = findViewById(R.id.namaTeknisiTextView)
         hargaTeknisiTextView = findViewById(R.id.hargaTeknisiTextView)
         addressTextView = findViewById(R.id.address)
+        finishOrderButton = findViewById(R.id.finish_order_button)
 
         // Konfigurasi MapView
         Configuration.getInstance().userAgentValue = packageName
@@ -56,6 +63,11 @@ class MapViewActivity : AppCompatActivity() {
             return
         }
 
+        // Set onClick listener untuk tombol Finish Order
+        finishOrderButton.setOnClickListener {
+            updateOrderStatusToDone(username)
+        }
+
         // Mulai proses pengambilan data dari Firestore
         checkUsernameInOrders(username)
     }
@@ -68,9 +80,11 @@ class MapViewActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    val technicianName = documents.documents[0].getString("technician_name")
-                    val technicianPrice = documents.documents[0].getString("technician_price")
-                    val address = documents.documents[0].getString("alamat")
+                    val document = documents.documents[0]
+                    case1Snapshot = document // Simpan snapshot untuk case 1
+                    val technicianName = document.getString("technician_name")
+                    val technicianPrice = document.getString("technician_price")
+                    val address = document.getString("alamat")
 
                     if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
                         updateTechnicianInfo(technicianName, technicianPrice, address)
@@ -96,11 +110,15 @@ class MapViewActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    val technicianName = documents.documents[0].getString("technician_name")
-                    val technicianPrice = documents.documents[0].getString("technician_price")
-                    val address = documents.documents[0].getString("alamat")
+                    val document = documents.documents[0]
+                    val technicianName = document.getString("technician_name")
+                    val technicianPrice = document.getString("technician_price")
+                    val address = document.getString("alamat")
 
                     if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
+                        // Case 2: Tampilkan tombol Finish Order
+                        finishOrderButton.visibility = View.VISIBLE
+                        finishOrderButton.tag = document.id // Simpan ID dokumen
                         updateTechnicianInfo(technicianName, technicianPrice, address)
                     } else {
                         Toast.makeText(this, "Field tidak lengkap dalam dokumen", Toast.LENGTH_SHORT).show()
@@ -123,6 +141,40 @@ class MapViewActivity : AppCompatActivity() {
 
         // Dapatkan koordinat dari alamat
         getCoordinatesFromAddress(address)
+    }
+
+    private fun updateOrderStatusToDone(username: String) {
+        val db = FirebaseFirestore.getInstance()
+        val documentId = finishOrderButton.tag as? String
+
+        if (documentId != null) {
+            db.collection("orders").document(documentId)
+                .update("status", "done")
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Order berhasil diselesaikan", Toast.LENGTH_SHORT).show()
+                    finishOrderButton.visibility = View.GONE // Sembunyikan tombol setelah selesai
+
+                    // Intent ke HomeActivity atau HomeTechActivity sesuai case
+                    if (case1Snapshot != null) {
+                        // Case 1: Intent ke HomeActivity
+                        val intent = Intent(this, HomeActivity::class.java)
+                        intent.putExtra("order_by", username)
+                        startActivity(intent)
+                    } else {
+                        // Case 2: Intent ke HomeTechActivity
+                        val intent = Intent(this, HomeTechActivity::class.java)
+                        intent.putExtra("technician_name", username)
+                        startActivity(intent)
+                    }
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("MapViewActivity", "Error saat memperbarui status order: ${e.message}")
+                    Toast.makeText(this, "Gagal menyelesaikan order: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(this, "Gagal mendapatkan ID dokumen order", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getCoordinatesFromAddress(address: String) {
@@ -176,7 +228,7 @@ class MapViewActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<List<GeocodingResult>>, t: Throwable) {
                 t.printStackTrace()
-                Toast.makeText(this@MapViewActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MapViewActivity, "Error API: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -185,17 +237,8 @@ class MapViewActivity : AppCompatActivity() {
         val marker = Marker(mapView)
         marker.position = GeoPoint(latitude, longitude)
         marker.title = title
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         mapView.overlays.add(marker)
-
-        // Perbarui tampilan peta
-        mapView.invalidate()
-
-        if (title == "Lokasi Mulai") {
-            mapView.controller.apply {
-                setZoom(15.0)
-                setCenter(GeoPoint(latitude, longitude))
-            }
-        }
+        mapView.controller.setCenter(marker.position)
+        mapView.controller.setZoom(15.0)
     }
 }
