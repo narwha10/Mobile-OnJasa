@@ -2,15 +2,10 @@ package com.example.onjasa
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ForgotPasswordActivity : AppCompatActivity() {
@@ -19,7 +14,6 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var usernameEditText: EditText
     private lateinit var btnConfirm: Button
     private lateinit var firestore: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,14 +24,13 @@ class ForgotPasswordActivity : AppCompatActivity() {
         usernameEditText = findViewById(R.id.usernameEditText)
         btnConfirm = findViewById(R.id.btnConfirm)
         firestore = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance()
 
         btnConfirm.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val username = usernameEditText.text.toString().trim()
 
             // Validasi input
-            if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "Masukkan email yang valid", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -59,11 +52,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    // Jika valid, kirim email verifikasi
-                    sendVerificationEmail(email)
-
-                    // Pindah ke VerificationNewPasswordActivity
-                    val intent = Intent(this, VerificationNewPasswordActivity::class.java)
+                    // Jika valid, tampilkan toast dan pindah ke NewPasswordActivity
+                    Toast.makeText(this, "Silakan ganti password Anda", Toast.LENGTH_SHORT).show()
+                    intent.putExtra("USERNAME", username)
+                    val intent = Intent(this, NewPasswordActivity::class.java)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, "Email atau username tidak valid", Toast.LENGTH_SHORT).show()
@@ -71,25 +63,6 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun sendVerificationEmail(email: String) {
-        auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(
-                        this,
-                        "Email verifikasi telah dikirim. Silakan periksa email Anda.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Gagal mengirim email verifikasi: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
             }
     }
 }
