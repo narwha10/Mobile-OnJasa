@@ -1,5 +1,6 @@
 package com.example.onjasa
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -67,11 +68,16 @@ class NewPasswordActivity : AppCompatActivity() {
                     userRef.update("password", newPassword)
                         .addOnSuccessListener {
                             Toast.makeText(this, "Password berhasil diperbarui.", Toast.LENGTH_SHORT).show()
-                            finish() // Menutup activity
+
+                            // Berpindah ke LoginActivity
+                            val intent = Intent(this, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK // Membersihkan stack activity
+                            startActivity(intent)
                         }
                         .addOnFailureListener { e ->
                             Toast.makeText(this, "Gagal memperbarui password: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
+
                 } else {
                     Toast.makeText(this, "Username tidak valid.", Toast.LENGTH_SHORT).show()
                 }

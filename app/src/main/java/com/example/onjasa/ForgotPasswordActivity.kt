@@ -54,8 +54,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     // Jika valid, tampilkan toast dan pindah ke NewPasswordActivity
                     Toast.makeText(this, "Silakan ganti password Anda", Toast.LENGTH_SHORT).show()
-                    intent.putExtra("USERNAME", username)
                     val intent = Intent(this, NewPasswordActivity::class.java)
+                    intent.putExtra("USERNAME", username)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, "Email atau username tidak valid", Toast.LENGTH_SHORT).show()
