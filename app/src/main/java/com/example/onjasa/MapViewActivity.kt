@@ -88,6 +88,9 @@ class MapViewActivity : AppCompatActivity() {
 
                     if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
                         updateTechnicianInfo(technicianName, technicianPrice, address)
+
+                        // Tambahkan listener untuk memantau perubahan pada dokumen di Firestore
+                        monitorOrderStatus(document.id)
                     } else {
                         Toast.makeText(this, "Field tidak lengkap dalam dokumen", Toast.LENGTH_SHORT).show()
                     }
@@ -158,15 +161,17 @@ class MapViewActivity : AppCompatActivity() {
                     if (case1Snapshot != null) {
                         // Case 1: Intent ke HomeActivity
                         val intent = Intent(this, HomeActivity::class.java)
-                        intent.putExtra("order_by", username)
+                        intent.putExtra("username", username)
+                        Log.d("MapViewActivity", "Sending username: $username")
                         startActivity(intent)
+                        finish() // Menutup MapViewActivity
                     } else {
                         // Case 2: Intent ke HomeTechActivity
                         val intent = Intent(this, HomeTechActivity::class.java)
-                        intent.putExtra("technician_name", username)
+                        intent.putExtra("username", username)
                         startActivity(intent)
+                        finish() // Menutup MapViewActivity
                     }
-                    finish()
                 }
                 .addOnFailureListener { e ->
                     Log.e("MapViewActivity", "Error saat memperbarui status order: ${e.message}")
@@ -222,13 +227,12 @@ class MapViewActivity : AppCompatActivity() {
                         Toast.makeText(this@MapViewActivity, "Gagal mendapatkan koordinat tujuan", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this@MapViewActivity, "Gagal mendapatkan respons geocoding", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MapViewActivity, "Gagal mendapatkan data geocoding", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<GeocodingResult>>, t: Throwable) {
-                t.printStackTrace()
-                Toast.makeText(this@MapViewActivity, "Error API: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MapViewActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -238,7 +242,31 @@ class MapViewActivity : AppCompatActivity() {
         marker.position = GeoPoint(latitude, longitude)
         marker.title = title
         mapView.overlays.add(marker)
-        mapView.controller.setCenter(marker.position)
-        mapView.controller.setZoom(15.0)
+        mapView.invalidate() // Refresh peta untuk menampilkan marker
+    }
+
+    private fun monitorOrderStatus(documentId: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("orders")
+            .document(documentId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("MapViewActivity", "Error monitoring order status: ${error.message}")
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val status = snapshot.getString("status")
+                    if (status == "done") {
+                        Toast.makeText(this, "Order selesai", Toast.LENGTH_SHORT).show()
+
+                        // Logout dan kembalikan ke LoginActivity
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish() // Menutup MapViewActivity agar logout terjadi
+                    }
+                }
+            }
     }
 }
