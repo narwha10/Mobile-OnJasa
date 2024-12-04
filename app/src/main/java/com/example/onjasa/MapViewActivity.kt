@@ -24,6 +24,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MapViewActivity : AppCompatActivity() {
+
     private lateinit var mapView: MapView
     private lateinit var namaTeknisiTextView: TextView
     private lateinit var hargaTeknisiTextView: TextView
@@ -36,6 +37,10 @@ class MapViewActivity : AppCompatActivity() {
     private var endLatitude: Double? = null
     private var endLongitude: Double? = null
     private var case1Snapshot: DocumentSnapshot? = null // Menyimpan snapshot dokumen untuk case 1
+
+    // Deklarasi global untuk technicianName dan technicianPrice
+    private var technicianName: String? = null
+    private var technicianPrice: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +75,18 @@ class MapViewActivity : AppCompatActivity() {
 
         // Mulai proses pengambilan data dari Firestore
         checkUsernameInOrders(username)
+
+        // Set up tombol accept_button untuk membuka ChatInActivity
+        val acceptButton = findViewById<Button>(R.id.accept_button)
+        acceptButton.setOnClickListener {
+            // Membuat intent untuk berpindah ke ChatInActivity
+            val intent = Intent(this, ChatIn::class.java).apply {
+                putExtra("USERNAME", username)         // Kirimkan username
+                putExtra("TECHNICIAN_NAME", technicianName)  // Kirimkan technicianName
+                putExtra("TECHNICIAN_PRICE", technicianPrice) // Kirimkan technicianPrice
+            }
+            startActivity(intent) // Menjalankan Activity
+        }
     }
 
     private fun checkUsernameInOrders(username: String) {
@@ -82,12 +99,12 @@ class MapViewActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     val document = documents.documents[0]
                     case1Snapshot = document // Simpan snapshot untuk case 1
-                    val technicianName = document.getString("technician_name")
-                    val technicianPrice = document.getString("technician_price")
+                    technicianName = document.getString("technician_name")
+                    technicianPrice = document.getString("technician_price")
                     val address = document.getString("alamat")
 
                     if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
-                        updateTechnicianInfo(technicianName, technicianPrice, address)
+                        updateTechnicianInfo(technicianName!!, technicianPrice!!, address!!)
 
                         // Tambahkan listener untuk memantau perubahan pada dokumen di Firestore
                         monitorOrderStatus(document.id)
@@ -114,15 +131,15 @@ class MapViewActivity : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     val document = documents.documents[0]
-                    val technicianName = document.getString("technician_name")
-                    val technicianPrice = document.getString("technician_price")
+                    technicianName = document.getString("technician_name")
+                    technicianPrice = document.getString("technician_price")
                     val address = document.getString("alamat")
 
                     if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
                         // Case 2: Tampilkan tombol Finish Order
                         finishOrderButton.visibility = View.VISIBLE
                         finishOrderButton.tag = document.id // Simpan ID dokumen
-                        updateTechnicianInfo(technicianName, technicianPrice, address)
+                        updateTechnicianInfo(technicianName!!, technicianPrice!!, address!!)
                     } else {
                         Toast.makeText(this, "Field tidak lengkap dalam dokumen", Toast.LENGTH_SHORT).show()
                     }
@@ -238,11 +255,12 @@ class MapViewActivity : AppCompatActivity() {
     }
 
     private fun addMarker(latitude: Double, longitude: Double, title: String) {
+        val geoPoint = GeoPoint(latitude, longitude)
         val marker = Marker(mapView)
-        marker.position = GeoPoint(latitude, longitude)
+        marker.position = geoPoint
         marker.title = title
         mapView.overlays.add(marker)
-        mapView.invalidate() // Refresh peta untuk menampilkan marker
+        mapView.controller.setCenter(geoPoint)
     }
 
     private fun monitorOrderStatus(documentId: String) {
