@@ -80,38 +80,80 @@ class ChatTeknisi : AppCompatActivity() {
      * Fungsi untuk mencari percakapan (chatId)
      */
     private fun findChat() {
-        val chatRef = firestore.collection("chats")
+        val ordersRef = firestore.collection("orders")
 
-        // Periksa apakah percakapan sudah ada berdasarkan senderId dan receiverId
-        chatRef.whereEqualTo("senderId", senderId)
-            .whereEqualTo("receiverId", receiverId)
+        // Cari apakah sudah ada order dengan senderId atau receiverId di dalam field 'order_by' atau 'technician_name'
+        ordersRef.whereEqualTo("order_by", senderId)
+            .whereEqualTo("technician_name", receiverId)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (querySnapshot.documents.isNotEmpty()) {
-                    // Jika dokumen ditemukan, gunakan chatId yang ada
-                    chatId = querySnapshot.documents[0].id
-                    fetchMessagesFromFirestore()
+                    // Jika percakapan sudah ada, ambil chatId dari order yang ditemukan
+                    val orderDocument = querySnapshot.documents[0]
+                    val existingChatId = orderDocument.getString("chat_id")
+                    if (existingChatId != null) {
+                        // Jika sudah ada chatId yang terhubung dengan order ini, gunakan chatId yang sudah ada
+                        chatId = existingChatId
+                        fetchMessagesFromFirestore()
+                    } else {
+                        // Jika belum ada chatId, buat chat baru
+                        createNewChat()
+                    }
                 } else {
-                    // Jika tidak ditemukan, buat chat baru
-                    val chatData = mapOf(
-                        "senderId" to senderId,
-                        "receiverId" to receiverId,
-                        "timestamp" to System.currentTimeMillis()
-                    )
-                    chatRef.add(chatData)
-                        .addOnSuccessListener { documentReference ->
-                            chatId = documentReference.id
-                            fetchMessagesFromFirestore()
-                        }
-                        .addOnFailureListener { e ->
-                            println("Error creating chat: ${e.message}")
-                        }
+                    // Jika tidak ada order yang sesuai, buat chat baru
+                    createNewChat()
                 }
             }
             .addOnFailureListener { e ->
                 println("Error finding chat: ${e.message}")
+                createNewChat() // Jika gagal mencari order, buat chat baru
             }
     }
+
+    private fun createNewChat() {
+        val chatRef = firestore.collection("chats")
+
+        // Buat chat baru
+        val chatData = mapOf(
+            "senderId" to senderId,
+            "receiverId" to receiverId,
+            "timestamp" to System.currentTimeMillis()
+        )
+
+        // Tambahkan chat baru ke Firestore
+        chatRef.add(chatData)
+            .addOnSuccessListener { documentReference ->
+                chatId = documentReference.id
+                updateOrderWithChatId() // Update order dengan chatId baru
+                fetchMessagesFromFirestore()
+            }
+            .addOnFailureListener { e ->
+                println("Error creating chat: ${e.message}")
+            }
+    }
+
+    private fun updateOrderWithChatId() {
+        val ordersRef = firestore.collection("orders")
+
+        // Update order dengan chat_id yang baru dibuat
+        val orderUpdate = mapOf(
+            "chat_id" to chatId
+        )
+
+        // Update chat_id di order yang sesuai
+        ordersRef.whereEqualTo("order_by", senderId)
+            .whereEqualTo("technician_name", receiverId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                querySnapshot.documents.forEach { document ->
+                    ordersRef.document(document.id).update(orderUpdate)
+                }
+            }
+            .addOnFailureListener { e ->
+                println("Error updating order with chatId: ${e.message}")
+            }
+    }
+
 
     /**
      * Fungsi untuk membaca pesan secara real-time dari Firestore
