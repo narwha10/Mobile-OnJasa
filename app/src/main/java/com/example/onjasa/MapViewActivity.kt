@@ -76,16 +76,46 @@ class MapViewActivity : AppCompatActivity() {
         // Mulai proses pengambilan data dari Firestore
         checkUsernameInOrders(username)
 
-        // Set up tombol accept_button untuk membuka ChatInActivity
+        // Set up tombol accept_button untuk membuka ChatTeknisiActivity atau ChatInActivity berdasarkan level
         val acceptButton = findViewById<Button>(R.id.accept_button)
         acceptButton.setOnClickListener {
-            // Membuat intent untuk berpindah ke ChatInActivity
-            val intent = Intent(this, ChatIn::class.java).apply {
-                putExtra("USERNAME", username)         // Kirimkan username
-                putExtra("TECHNICIAN_NAME", technicianName)  // Kirimkan technicianName
-                putExtra("TECHNICIAN_PRICE", technicianPrice) // Kirimkan technicianPrice
-            }
-            startActivity(intent) // Menjalankan Activity
+            val db = FirebaseFirestore.getInstance()
+
+            // Mengambil data pengguna untuk memeriksa field 'level'
+            db.collection("users")
+                .whereEqualTo("username", username)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val document = documents.documents[0]
+                        val level = document.getBoolean("level") // Mengambil nilai field 'level'
+
+                        if (level != null) {
+                            // Mengecek level dan mengarahkan ke activity yang sesuai
+                            val intent = if (level) {
+                                // Jika level true, buka ChatTeknisiActivity
+                                Intent(this, ChatTeknisi::class.java)
+                            } else {
+                                // Jika level false, buka ChatInActivity
+                                Intent(this, ChatIn::class.java)
+                            }
+
+                            // Kirimkan data yang sama (username, technicianName, technicianPrice)
+                            intent.putExtra("USERNAME", username)
+                            intent.putExtra("TECHNICIAN_NAME", technicianName)
+                            intent.putExtra("TECHNICIAN_PRICE", technicianPrice)
+                            startActivity(intent) // Menjalankan Activity
+                        } else {
+                            Toast.makeText(this, "Field 'level' tidak ditemukan", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this, "Username tidak ditemukan dalam database", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("MapViewActivity", "Error saat memeriksa field level: ${e.message}")
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 
