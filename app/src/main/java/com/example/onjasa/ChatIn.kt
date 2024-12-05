@@ -80,34 +80,63 @@ class ChatIn : AppCompatActivity() {
     private fun findOrCreateChat() {
         val chatRef = firestore.collection("chats")
 
-        // Periksa apakah percakapan sudah ada berdasarkan senderId dan receiverId
-        chatRef.whereEqualTo("senderId", senderId)
-            .whereEqualTo("receiverId", receiverId)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    // Jika dokumen ditemukan, gunakan chatId yang ada
-                    chatId = querySnapshot.documents[0].id
-                    fetchMessagesFromFirestore()
-                } else {
-                    // Jika tidak ditemukan, buat dokumen baru dengan ID otomatis
-                    val chatData = mapOf(
-                        "senderId" to senderId,
-                        "receiverId" to receiverId,
-                        "timestamp" to System.currentTimeMillis()
-                    )
-                    chatRef.add(chatData)
-                        .addOnSuccessListener { documentReference ->
-                            chatId = documentReference.id
-                            fetchMessagesFromFirestore()
-                        }
-                        .addOnFailureListener { e ->
-                            println("Error creating chat: ${e.message}")
-                        }
+        // Jika Anda sudah memiliki chatId, periksa langsung berdasarkan chatId
+        if (chatId != null) {
+            chatRef.document(chatId!!).get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        // Jika dokumen dengan chatId ditemukan, ambil pesan-pesan yang ada
+                        fetchMessagesFromFirestore()
+                    } else {
+                        // Jika dokumen chat dengan chatId tidak ditemukan, buat chat baru
+                        createNewChat()
+                    }
                 }
+                .addOnFailureListener { e ->
+                    println("Error finding chat by ID: ${e.message}")
+                }
+        } else {
+            // Jika chatId belum ada, periksa berdasarkan senderId dan receiverId
+            chatRef.whereEqualTo("senderId", senderId)
+                .whereEqualTo("receiverId", receiverId)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        // Jika dokumen ditemukan, gunakan chatId yang ada
+                        chatId = querySnapshot.documents[0].id
+                        fetchMessagesFromFirestore()
+                    } else {
+                        // Jika tidak ditemukan, buat dokumen baru dengan ID otomatis
+                        createNewChat()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    println("Error finding chat: ${e.message}")
+                }
+        }
+    }
+
+
+    /**
+     * Fungsi untuk membuat chat baru
+     */
+    private fun createNewChat() {
+        val chatRef = firestore.collection("chats")
+
+        // Membuat chat baru
+        val chatData = mapOf(
+            "senderId" to senderId,
+            "receiverId" to receiverId,
+            "timestamp" to System.currentTimeMillis()
+        )
+
+        chatRef.add(chatData)
+            .addOnSuccessListener { documentReference ->
+                chatId = documentReference.id // Menyimpan ID chat yang baru
+                fetchMessagesFromFirestore() // Mengambil pesan dari Firestore
             }
             .addOnFailureListener { e ->
-                println("Error finding chat: ${e.message}")
+                println("Error creating chat: ${e.message}")
             }
     }
 

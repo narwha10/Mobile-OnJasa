@@ -48,7 +48,7 @@ class HomeTechActivity : AppCompatActivity() {
         // Mendengarkan perubahan data secara real-time
         firestore.collection("orders")
             .whereEqualTo("technician_name", username)
-            .whereIn("status", listOf("processing", "otw")) // Memfilter status
+            .whereIn("status", listOf("processing", "utiwi")) // Memfilter status
             .limit(1)
             .addSnapshotListener { querySnapshot, e ->
                 if (e != null) {
@@ -71,14 +71,14 @@ class HomeTechActivity : AppCompatActivity() {
 
                                 binding.actionButtons.visibility = View.VISIBLE
                                 binding.btnAccept.setOnClickListener {
-                                    updateOrderStatus(currentOrderId, "otw")
+                                    updateOrderStatus(currentOrderId, "utiwi")
                                 }
                                 binding.btnReject.setOnClickListener {
                                     updateOrderStatus(currentOrderId, "rejected")
                                 }
                             }
 
-                            "otw" -> {
+                            "utiwi" -> {
                                 binding.orderCard.visibility = View.VISIBLE
                                 binding.noOrdersText.visibility = View.GONE
                                 binding.orderTitle.text = "Your OnGoing Orders:"
