@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="Chat Teknisimu"
+        android:text="Chat Teknisi"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"

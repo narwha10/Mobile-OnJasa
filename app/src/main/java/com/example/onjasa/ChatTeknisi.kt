@@ -32,13 +32,13 @@ class ChatTeknisi : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         // Tangkap data dari Intent
-        senderId = intent.getStringExtra("USERNAME") ?: "Anonymous"
-        receiverId = intent.getStringExtra("TECHNICIAN_NAME") ?: "Technician"
+        senderId = intent.getStringExtra("TECHNICIAN_NAME") ?: "Technician"
+        receiverId =  intent.getStringExtra("orderBy") ?: "Anonymous"
         userId = receiverId // User yang sedang login dianggap sebagai penerima (receiver)
 
         // Inisialisasi RecyclerView dan Adapter
         recyclerView = findViewById(R.id.recyclerView)
-        chatAdapter = ChatAdapter(userId = userId)
+        chatAdapter = ChatAdapter(userId = receiverId)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = chatAdapter
 

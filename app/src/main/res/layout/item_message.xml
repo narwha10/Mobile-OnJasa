@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:layout_marginEnd="16dp"
         app:shapeAppearanceOverlay="@style/roundedProfileImage"
-        android:src="@drawable/whatsapp_image_2024_09_26_at_21_00_37_b3e1e39d" />
+        android:src="@drawable/screenshot_2024_04_25_092159" />
 
     <!-- Message Content -->
     <LinearLayout

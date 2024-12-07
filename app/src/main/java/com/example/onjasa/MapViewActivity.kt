@@ -62,6 +62,7 @@ class MapViewActivity : AppCompatActivity() {
 
         // Ambil username dari Intent
         val username = intent.getStringExtra("USERNAME") ?: ""
+        val orderBy = intent.getStringExtra("orderBy") ?: ""
         if (username.isEmpty()) {
             Toast.makeText(this, "Username tidak ditemukan", Toast.LENGTH_SHORT).show()
             finish()
@@ -104,6 +105,7 @@ class MapViewActivity : AppCompatActivity() {
                             intent.putExtra("USERNAME", username)
                             intent.putExtra("TECHNICIAN_NAME", technicianName)
                             intent.putExtra("TECHNICIAN_PRICE", technicianPrice)
+                            intent.putExtra("orderBy", orderBy) // Mengirimkan nilai orderBy
                             startActivity(intent) // Menjalankan Activity
                         } else {
                             Toast.makeText(this, "Field 'level' tidak ditemukan", Toast.LENGTH_SHORT).show()
@@ -318,3 +320,4 @@ class MapViewActivity : AppCompatActivity() {
             }
     }
 }
+
