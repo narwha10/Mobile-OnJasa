@@ -61,6 +61,7 @@ class HomeTechActivity : AppCompatActivity() {
                         currentOrderId = document.id
                         val orderBy = document.getString("order_by") ?: "Unknown"
                         val status = document.getString("status")
+                        val chatId = document.getString("chatId") ?: ""  // Mengambil chatId dari dokumen order
 
                         when (status) {
                             "processing" -> {
@@ -90,11 +91,12 @@ class HomeTechActivity : AppCompatActivity() {
                                     intent.putExtra("orderId", currentOrderId) // Mengirimkan orderId
                                     intent.putExtra("USERNAME", username)
                                     intent.putExtra("orderBy", orderBy) // Mengirimkan nilai orderBy
+                                    intent.putExtra("chatId", chatId) // Mengirimkan chatId yang benar
 
-                                    Log.d("MapViewActivity", "Username dikirim: $username, OrderBy: $orderBy")
+                                    Log.d("ChatTeknisi", "Chat ID: $chatId")
+                                    Log.d("MapViewActivity", "Username dikirim: $username, OrderBy: $orderBy, chatId: $chatId")
                                     startActivity(intent)
                                 }
-
                             }
                         }
                     }
@@ -104,6 +106,7 @@ class HomeTechActivity : AppCompatActivity() {
                 }
             }
     }
+
 
     private fun updateOrderStatus(orderId: String?, newStatus: String) {
         if (orderId == null) return
