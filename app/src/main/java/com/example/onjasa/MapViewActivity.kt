@@ -41,7 +41,7 @@ class MapViewActivity : AppCompatActivity() {
     // Deklarasi global untuk technicianName dan technicianPrice
     private var technicianName: String? = null
     private var technicianPrice: String? = null
-    private var chatId: String? = null
+    private var chatId: String? = null // Variabel kelas
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,12 +61,26 @@ class MapViewActivity : AppCompatActivity() {
         // Tambahkan marker lokasi mulai
         addMarker(startLatitude, startLongitude, "Lokasi Mulai")
 
-        // Ambil username dari Intent
-        val chatId = intent.getStringExtra("chatId") ?: ""
+        // Ambil username dan chatId dari Intent dan tetapkan ke variabel kelas
+        chatId = intent.getStringExtra("chatId") ?: ""
         val username = intent.getStringExtra("USERNAME") ?: ""
         val orderBy = intent.getStringExtra("orderBy") ?: ""
+
+        // Log nilai chatId untuk debugging
+        Log.d("MapViewActivity", "Diterima chatId: $chatId")
+        Log.d("MapViewActivity", "Diterima username: $username")
+        Log.d("MapViewActivity", "Diterima orderBy: $orderBy")
+
+        // Validasi username
         if (username.isEmpty()) {
             Toast.makeText(this, "Username tidak ditemukan", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // Validasi chatId
+        if (chatId == null) {
+            Toast.makeText(this, "Chat ID tidak ditemukan", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -103,6 +117,9 @@ class MapViewActivity : AppCompatActivity() {
                                 Intent(this, ChatIn::class.java)
                             }
 
+                            // Log nilai chatId sebelum dikirim
+                            Log.d("MapViewActivity", "Mengirim chatId: $chatId ke ${if (level) "ChatTeknisi" else "ChatIn"}")
+
                             // Kirimkan data yang sama (username, technicianName, technicianPrice)
                             intent.putExtra("USERNAME", username)
                             intent.putExtra("TECHNICIAN_NAME", technicianName)
@@ -138,6 +155,10 @@ class MapViewActivity : AppCompatActivity() {
                     technicianPrice = document.getString("technician_price")
                     val address = document.getString("alamat")
 
+                    Log.d("MapViewActivity", "Technician Name: $technicianName")
+                    Log.d("MapViewActivity", "Technician Price: $technicianPrice")
+                    Log.d("MapViewActivity", "Address: $address")
+
                     if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
                         updateTechnicianInfo(technicianName!!, technicianPrice!!, address!!)
 
@@ -170,6 +191,10 @@ class MapViewActivity : AppCompatActivity() {
                     technicianPrice = document.getString("technician_price")
                     val address = document.getString("alamat")
 
+                    Log.d("MapViewActivity", "Technician Name: $technicianName")
+                    Log.d("MapViewActivity", "Technician Price: $technicianPrice")
+                    Log.d("MapViewActivity", "Address: $address")
+
                     if (!technicianName.isNullOrEmpty() && !technicianPrice.isNullOrEmpty() && !address.isNullOrEmpty()) {
                         // Case 2: Tampilkan tombol Finish Order
                         finishOrderButton.visibility = View.VISIBLE
@@ -196,42 +221,6 @@ class MapViewActivity : AppCompatActivity() {
 
         // Dapatkan koordinat dari alamat
         getCoordinatesFromAddress(address)
-    }
-
-    private fun updateOrderStatusToDone(username: String) {
-        val db = FirebaseFirestore.getInstance()
-        val documentId = finishOrderButton.tag as? String
-
-        if (documentId != null) {
-            db.collection("orders").document(documentId)
-                .update("status", "done")
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Order berhasil diselesaikan", Toast.LENGTH_SHORT).show()
-                    finishOrderButton.visibility = View.GONE // Sembunyikan tombol setelah selesai
-
-                    // Intent ke HomeActivity atau HomeTechActivity sesuai case
-                    if (case1Snapshot != null) {
-                        // Case 1: Intent ke HomeActivity
-                        val intent = Intent(this, HomeActivity::class.java)
-                        intent.putExtra("username", username)
-                        Log.d("MapViewActivity", "Sending username: $username")
-                        startActivity(intent)
-                        finish() // Menutup MapViewActivity
-                    } else {
-                        // Case 2: Intent ke HomeTechActivity
-                        val intent = Intent(this, HomeTechActivity::class.java)
-                        intent.putExtra("username", username)
-                        startActivity(intent)
-                        finish() // Menutup MapViewActivity
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("MapViewActivity", "Error saat memperbarui status order: ${e.message}")
-                    Toast.makeText(this, "Gagal menyelesaikan order: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(this, "Gagal mendapatkan ID dokumen order", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun getCoordinatesFromAddress(address: String) {
@@ -295,32 +284,41 @@ class MapViewActivity : AppCompatActivity() {
         marker.position = geoPoint
         marker.title = title
         mapView.overlays.add(marker)
-        mapView.controller.setCenter(geoPoint)
     }
 
-    private fun monitorOrderStatus(documentId: String) {
+    private fun monitorOrderStatus(orderId: String) {
         val db = FirebaseFirestore.getInstance()
 
-        db.collection("orders")
-            .document(documentId)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Log.e("MapViewActivity", "Error monitoring order status: ${error.message}")
+        db.collection("orders").document(orderId)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.e("MapViewActivity", "Error listening for changes: ${e.message}")
                     return@addSnapshotListener
                 }
 
                 if (snapshot != null && snapshot.exists()) {
                     val status = snapshot.getString("status")
                     if (status == "done") {
-                        Toast.makeText(this, "Order selesai", Toast.LENGTH_SHORT).show()
-
-                        // Logout dan kembalikan ke LoginActivity
-                        val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish() // Menutup MapViewActivity agar logout terjadi
+                        finishOrderButton.visibility = View.INVISIBLE // Sembunyikan tombol jika status "done"
                     }
                 }
             }
     }
-}
 
+    private fun updateOrderStatusToDone(username: String) {
+        val db = FirebaseFirestore.getInstance()
+        val orderId = case1Snapshot?.id // Ambil ID dokumen dari snapshot
+
+        if (orderId != null) {
+            db.collection("orders").document(orderId)
+                .update("status", "done")
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Pesanan telah selesai", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("MapViewActivity", "Error updating order status: ${e.message}")
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+}
