@@ -33,8 +33,8 @@ class ChatTeknisi : AppCompatActivity() {
 
         // Tangkap data dari Intent
         senderId = intent.getStringExtra("TECHNICIAN_NAME") ?: "Technician"
-        receiverId =  intent.getStringExtra("orderBy") ?: "Anonymous"
-        userId = receiverId // User yang sedang login dianggap sebagai penerima (receiver)
+        receiverId = intent.getStringExtra("orderBy") ?: "Anonymous"
+        userId = senderId // User yang sedang login dianggap sebagai penerima (receiver)
 
         // Inisialisasi RecyclerView dan Adapter
         recyclerView = findViewById(R.id.recyclerView)
@@ -70,119 +70,51 @@ class ChatTeknisi : AppCompatActivity() {
 
                 // Scroll RecyclerView ke posisi terakhir (pesan terbaru)
                 recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
-            } else {
-                println("Chat ID is null or message is empty.")
             }
         }
     }
 
     /**
-     * Fungsi untuk mencari percakapan (chatId)
+     * Fungsi untuk mencari percakapan
      */
     private fun findChat() {
-        val ordersRef = firestore.collection("orders")
-
-        // Cari apakah sudah ada order dengan senderId atau receiverId di dalam field 'order_by' atau 'technician_name'
-        ordersRef.whereEqualTo("order_by", senderId)
-            .whereEqualTo("technician_name", receiverId)
+        val chatRef = firestore.collection("chats")
+        chatRef.whereEqualTo("senderId", senderId)
+            .whereEqualTo("receiverId", receiverId)
             .get()
             .addOnSuccessListener { querySnapshot ->
-                if (querySnapshot.documents.isNotEmpty()) {
-                    // Jika percakapan sudah ada, ambil chatId dari order yang ditemukan
-                    val orderDocument = querySnapshot.documents[0]
-                    val existingChatId = orderDocument.getString("chat_id")
-                    if (existingChatId != null) {
-                        // Jika sudah ada chatId yang terhubung dengan order ini, gunakan chatId yang sudah ada
-                        chatId = existingChatId
-                        fetchMessagesFromFirestore()
-                    } else {
-                        // Jika belum ada chatId, buat chat baru
-                        createNewChat()
-                    }
+                if (!querySnapshot.isEmpty) {
+                    chatId = querySnapshot.documents[0].id
+                    fetchMessagesFromFirestore() // Mengambil pesan dari Firestore
                 } else {
-                    // Jika tidak ada order yang sesuai, buat chat baru
                     createNewChat()
                 }
             }
             .addOnFailureListener { e ->
                 println("Error finding chat: ${e.message}")
-                createNewChat() // Jika gagal mencari order, buat chat baru
             }
     }
 
+    /**
+     * Fungsi untuk membuat chat baru
+     */
     private fun createNewChat() {
         val chatRef = firestore.collection("chats")
 
-        // Buat chat baru
         val chatData = mapOf(
             "senderId" to senderId,
             "receiverId" to receiverId,
             "timestamp" to System.currentTimeMillis()
         )
 
-        // Tambahkan chat baru ke Firestore
         chatRef.add(chatData)
             .addOnSuccessListener { documentReference ->
                 chatId = documentReference.id
-                updateOrderWithChatId() // Update order dengan chatId baru
-                fetchMessagesFromFirestore()
+                fetchMessagesFromFirestore() // Mengambil pesan dari Firestore
             }
             .addOnFailureListener { e ->
                 println("Error creating chat: ${e.message}")
             }
-    }
-
-    private fun updateOrderWithChatId() {
-        val ordersRef = firestore.collection("orders")
-
-        // Update order dengan chat_id yang baru dibuat
-        val orderUpdate = mapOf(
-            "chat_id" to chatId
-        )
-
-        // Update chat_id di order yang sesuai
-        ordersRef.whereEqualTo("order_by", senderId)
-            .whereEqualTo("technician_name", receiverId)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                querySnapshot.documents.forEach { document ->
-                    ordersRef.document(document.id).update(orderUpdate)
-                }
-            }
-            .addOnFailureListener { e ->
-                println("Error updating order with chatId: ${e.message}")
-            }
-    }
-
-
-    /**
-     * Fungsi untuk membaca pesan secara real-time dari Firestore
-     */
-    private fun fetchMessagesFromFirestore() {
-        if (chatId == null) {
-            println("Chat ID is null. Cannot fetch messages.")
-            return
-        }
-
-        val messageRef = firestore.collection("chats")
-            .document(chatId!!)
-            .collection("messages")
-            .orderBy("timestamp", Query.Direction.ASCENDING)
-
-        messageRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                println("Error fetching messages: ${e.message}")
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && !snapshot.isEmpty) {
-                val messages = snapshot.toObjects(Message::class.java)
-                chatAdapter.updateMessages(messages)  // Update adapter dengan pesan baru
-                recyclerView.scrollToPosition(chatAdapter.itemCount - 1)  // Scroll ke pesan terbaru
-            } else {
-                println("No messages found.")
-            }
-        }
     }
 
     /**
@@ -195,15 +127,44 @@ class ChatTeknisi : AppCompatActivity() {
         }
 
         val messageRef = firestore.collection("chats")
-            .document(chatId!!)
+            .document(chatId!!)  // Menyimpan ke sub-dokumen chat yang sudah ada
             .collection("messages")
 
-        messageRef.add(message)
+        messageRef.document(message.id)
+            .set(message)
             .addOnSuccessListener {
                 println("Message saved successfully!")
             }
             .addOnFailureListener { e ->
                 println("Error saving message: ${e.message}")
             }
+    }
+
+    /**
+     * Fungsi untuk membaca pesan dari Firestore secara real-time
+     */
+    private fun fetchMessagesFromFirestore() {
+        if (chatId == null) {
+            println("Chat ID is null. Cannot fetch messages.")
+            return
+        }
+
+        val messageRef = firestore.collection("chats")
+            .document(chatId!!) // Mengambil chat berdasarkan chatId
+            .collection("messages")
+            .orderBy("timestamp", Query.Direction.ASCENDING)
+
+        messageRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                println("Error fetching messages: ${e.message}")
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && !snapshot.isEmpty) {
+                val messages = snapshot.toObjects(Message::class.java)
+                chatAdapter.updateMessages(messages)
+                recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+            }
+        }
     }
 }

@@ -41,6 +41,7 @@ class MapViewActivity : AppCompatActivity() {
     // Deklarasi global untuk technicianName dan technicianPrice
     private var technicianName: String? = null
     private var technicianPrice: String? = null
+    private var chatId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,7 @@ class MapViewActivity : AppCompatActivity() {
         addMarker(startLatitude, startLongitude, "Lokasi Mulai")
 
         // Ambil username dari Intent
+        val chatId = intent.getStringExtra("chatId") ?: ""
         val username = intent.getStringExtra("USERNAME") ?: ""
         val orderBy = intent.getStringExtra("orderBy") ?: ""
         if (username.isEmpty()) {
@@ -106,6 +108,7 @@ class MapViewActivity : AppCompatActivity() {
                             intent.putExtra("TECHNICIAN_NAME", technicianName)
                             intent.putExtra("TECHNICIAN_PRICE", technicianPrice)
                             intent.putExtra("orderBy", orderBy) // Mengirimkan nilai orderBy
+                            intent.putExtra("chatId", chatId)
                             startActivity(intent) // Menjalankan Activity
                         } else {
                             Toast.makeText(this, "Field 'level' tidak ditemukan", Toast.LENGTH_SHORT).show()

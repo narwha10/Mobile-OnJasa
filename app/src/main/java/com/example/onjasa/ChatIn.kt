@@ -3,6 +3,7 @@ package com.example.onjasa
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,6 @@ class ChatIn : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
 
     private var chatId: String? = null
-    private lateinit var userId: String
     private lateinit var senderId: String
     private lateinit var receiverId: String
 
@@ -28,17 +28,24 @@ class ChatIn : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_in)
 
-        // Inisialisasi Firebase Firestore
+        // Inisialisasi Firestore
         firestore = FirebaseFirestore.getInstance()
 
         // Tangkap data dari Intent
+        chatId = intent.getStringExtra("chatId")
         senderId = intent.getStringExtra("USERNAME") ?: "Anonymous"
         receiverId = intent.getStringExtra("TECHNICIAN_NAME") ?: "Technician"
-        userId = senderId // User yang sedang login dianggap sebagai pengirim (sender)
+
+        // Validasi chatId
+        if (chatId == null) {
+            Toast.makeText(this, "Chat ID tidak ditemukan.", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         // Inisialisasi RecyclerView dan Adapter
         recyclerView = findViewById(R.id.recyclerView)
-        chatAdapter = ChatAdapter(userId = userId)
+        chatAdapter = ChatAdapter(userId = senderId)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = chatAdapter
 
@@ -48,13 +55,13 @@ class ChatIn : AppCompatActivity() {
 
         // Tombol Back
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
-            finish() // Kembali ke activity sebelumnya
+            finish()
         }
 
-        // Periksa apakah percakapan sudah ada
-        findOrCreateChat()
+        // Dengarkan pesan di Firestore
+        fetchMessagesFromFirestore()
 
-        // Tambahkan pesan ke chat ketika tombol kirim ditekan
+        // Kirim pesan ketika tombol diklik
         sendButton.setOnClickListener {
             val messageText = messageEditText.text.toString()
             if (messageText.isNotBlank()) {
@@ -65,101 +72,33 @@ class ChatIn : AppCompatActivity() {
                     content = messageText,
                     timestamp = System.currentTimeMillis()
                 )
-                saveMessageToFirestore(newMessage) // Simpan pesan ke Firestore
-                messageEditText.text.clear() // Hapus teks setelah pesan dikirim
-
-                // Scroll RecyclerView ke posisi terakhir (pesan terbaru)
+                saveMessageToFirestore(newMessage)
+                messageEditText.text.clear()
                 recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
             }
         }
     }
 
     /**
-     * Fungsi untuk mencari atau membuat percakapan (chatId)
-     */
-    private fun findOrCreateChat() {
-        val chatRef = firestore.collection("chats")
-
-        // Jika Anda sudah memiliki chatId, periksa langsung berdasarkan chatId
-        if (chatId != null) {
-            chatRef.document(chatId!!).get()
-                .addOnSuccessListener { documentSnapshot ->
-                    if (documentSnapshot.exists()) {
-                        // Jika dokumen dengan chatId ditemukan, ambil pesan-pesan yang ada
-                        fetchMessagesFromFirestore()
-                    } else {
-                        // Jika dokumen chat dengan chatId tidak ditemukan, buat chat baru
-                        createNewChat()
-                    }
-                }
-                .addOnFailureListener { e ->
-                    println("Error finding chat by ID: ${e.message}")
-                }
-        } else {
-            // Jika chatId belum ada, periksa berdasarkan senderId dan receiverId
-            chatRef.whereEqualTo("senderId", senderId)
-                .whereEqualTo("receiverId", receiverId)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (!querySnapshot.isEmpty) {
-                        // Jika dokumen ditemukan, gunakan chatId yang ada
-                        chatId = querySnapshot.documents[0].id
-                        fetchMessagesFromFirestore()
-                    } else {
-                        // Jika tidak ditemukan, buat dokumen baru dengan ID otomatis
-                        createNewChat()
-                    }
-                }
-                .addOnFailureListener { e ->
-                    println("Error finding chat: ${e.message}")
-                }
-        }
-    }
-
-
-    /**
-     * Fungsi untuk membuat chat baru
-     */
-    private fun createNewChat() {
-        val chatRef = firestore.collection("chats")
-
-        // Membuat chat baru
-        val chatData = mapOf(
-            "senderId" to senderId,
-            "receiverId" to receiverId,
-            "timestamp" to System.currentTimeMillis()
-        )
-
-        chatRef.add(chatData)
-            .addOnSuccessListener { documentReference ->
-                chatId = documentReference.id // Menyimpan ID chat yang baru
-                fetchMessagesFromFirestore() // Mengambil pesan dari Firestore
-            }
-            .addOnFailureListener { e ->
-                println("Error creating chat: ${e.message}")
-            }
-    }
-
-    /**
-     * Fungsi untuk menyimpan pesan ke Firestore
+     * Fungsi untuk menyimpan pesan ke Firestore sebagai sub-dokumen dari chat
      */
     private fun saveMessageToFirestore(message: Message) {
-        if (chatId == null) {
-            println("Chat ID is null. Message cannot be saved.")
-            return
-        }
+        val chatRef = firestore.collection("chats").document(chatId ?: "")
+        val messageRef = chatRef.collection("messages")
 
-        val messageRef = firestore.collection("chats")
-            .document(chatId!!)
-            .collection("messages")
+        val messageData = mapOf(
+            "senderId" to message.senderId,
+            "receiverId" to message.receiverId,
+            "content" to message.content,
+            "timestamp" to message.timestamp
+        )
 
-        messageRef.document(message.id)
-            .set(message)
+        messageRef.add(messageData)
             .addOnSuccessListener {
                 println("Message saved successfully!")
             }
             .addOnFailureListener { e ->
-                println("Error saving message: ${e.message}")
+                Toast.makeText(this, "Gagal mengirim pesan: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -167,27 +106,28 @@ class ChatIn : AppCompatActivity() {
      * Fungsi untuk membaca pesan secara real-time dari Firestore
      */
     private fun fetchMessagesFromFirestore() {
-        if (chatId == null) {
-            println("Chat ID is null. Cannot fetch messages.")
-            return
-        }
-
-        val messageRef = firestore.collection("chats")
-            .document(chatId!!)
-            .collection("messages")
+        val chatRef = firestore.collection("chats").document(chatId ?: "")
+        val messageRef = chatRef.collection("messages")
             .orderBy("timestamp", Query.Direction.ASCENDING)
 
         messageRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
-                println("Error fetching messages: ${e.message}")
+                Toast.makeText(this, "Gagal memuat pesan: ${e.message}", Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
 
-            if (snapshot != null && !snapshot.isEmpty) {
-                val messages = snapshot.toObjects(Message::class.java)
-                chatAdapter.updateMessages(messages)
-                recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
-            }
+            val messages = snapshot?.documents?.map { doc ->
+                Message(
+                    id = doc.id,
+                    senderId = doc.getString("senderId") ?: "",
+                    receiverId = doc.getString("receiverId") ?: "",
+                    content = doc.getString("content") ?: "",
+                    timestamp = doc.getLong("timestamp") ?: 0L
+                )
+            } ?: emptyList()
+
+            chatAdapter.updateMessages(messages)
+            recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
         }
     }
 }

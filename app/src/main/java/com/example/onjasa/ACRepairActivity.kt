@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Date
+import java.util.UUID
 
 class ACRepairActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
@@ -145,12 +146,18 @@ class ACRepairActivity : AppCompatActivity() {
         }
     }
 
+    private fun generateUUIDChatId(): String {
+        return UUID.randomUUID().toString()
+    }
+
     private fun saveOrderToFirestore(nama: String?, harga: String?) {
         // Logika utama: gunakan data alamat dan nohp dari Intent jika ada
         if (alamat.isNullOrEmpty() || nohp.isNullOrEmpty()) {
             Toast.makeText(this, "Data alamat atau nohp tidak lengkap.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        val chatId: String = generateUUIDChatId()
 
         val orderData = hashMapOf(
             "technician_name" to nama,
@@ -159,18 +166,24 @@ class ACRepairActivity : AppCompatActivity() {
             "order_by" to username,
             "alamat" to alamat,
             "nohp" to nohp,
-            "status" to "processing"
+            "status" to "processing",
+            "chatId" to chatId
         )
 
         db.collection("orders")
             .add(orderData)
             .addOnSuccessListener { documentReference ->
                 Toast.makeText(this, "Order berhasil!", Toast.LENGTH_SHORT).show()
+
+                // Memanggil createNewChat dengan parameter yang diperlukan
+                createNewChat(chatId, username, nama ?: "Unknown Technician")
+
                 val intent = Intent(this, LoadingOrderActivity::class.java).apply {
                     putExtra("USERNAME", username) // Pass username
                     putExtra("ORDER_ID", documentReference.id)
                     putExtra("TECHNICIAN_NAME", nama)
                     putExtra("TECHNICIAN_PRICE", harga)
+                    putExtra("chatId", chatId)
                 }
                 startActivity(intent)
             }
@@ -178,4 +191,26 @@ class ACRepairActivity : AppCompatActivity() {
                 Log.e("FirestoreError", "Error adding order", e)
             }
     }
+
+    private fun createNewChat(chatId: String, userName: String, technicianName: String) {
+        val chatData = hashMapOf(
+            "chatId" to chatId,
+            "userName" to userName,
+            "technicianName" to technicianName,
+            "createdAt" to Date()
+        )
+
+        db.collection("chats")
+            .document(chatId)
+            .set(chatData)
+            .addOnSuccessListener {
+                Log.d("Chat", "Chat room successfully created with chatId: $chatId")
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirestoreError", "Error creating chat room", e)
+                Toast.makeText(this, "Gagal membuat room chat", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
 }

@@ -22,6 +22,7 @@ class ACPaymentActivity : AppCompatActivity() {
     private var username: String? = null
     private var technicianName: String? = null
     private var technicianPrice: Double? = null
+    private var chatId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,7 @@ class ACPaymentActivity : AppCompatActivity() {
         username = intent.getStringExtra("USERNAME")
         technicianName = intent.getStringExtra("TECHNICIAN_NAME")
         technicianPrice = intent.getDoubleExtra("TECHNICIAN_PRICE", 0.0)
+        chatId = intent.getStringExtra("chatId") ?: "unknown"
 
         // Menambahkan komentar pada bagian lama untuk memberi penjelasan
         /*
@@ -56,6 +58,7 @@ class ACPaymentActivity : AppCompatActivity() {
                 putExtra("USERNAME", username) // Mengirimkan username
                 putExtra("TECHNICIAN_NAME", technicianName) // Mengirimkan nama teknisi
                 putExtra("TECHNICIAN_PRICE", technicianPrice) // Mengirimkan harga teknisi
+                putExtra("chatId", chatId) //chatid cik
             }
             // Memulai MapViewActivity dengan membawa data
             startActivity(intent)

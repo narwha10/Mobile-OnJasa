@@ -24,6 +24,7 @@ class LoadingOrderActivity : AppCompatActivity() {
     private lateinit var username: String
     private lateinit var technicianName: String
     private lateinit var technicianPrice: String
+    private lateinit var chatId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +39,7 @@ class LoadingOrderActivity : AppCompatActivity() {
         technicianName = intent.getStringExtra("TECHNICIAN_NAME") ?: ""
         technicianPrice = intent.getStringExtra("TECHNICIAN_PRICE") ?: ""
         orderId = intent.getStringExtra("ORDER_ID") ?: "default_order_id"
+        chatId = intent.getStringExtra("chatId") ?: "unknown"
 
         // Find TextViews and set text
         val nameTextView: TextView = findViewById(R.id.namaTeknisi)
@@ -136,6 +138,7 @@ class LoadingOrderActivity : AppCompatActivity() {
                             intent.putExtra("USERNAME", username) // Pass username
                             intent.putExtra("TECHNICIAN_NAME", technicianName) // Pass technician name
                             intent.putExtra("TECHNICIAN_PRICE", technicianPrice) // Pass technician price
+                            intent.putExtra("chatId", chatId) //chatid cik
                             startActivity(intent)
                             finish()
                             return@addOnSuccessListener // Stop execution after navigation
@@ -145,6 +148,7 @@ class LoadingOrderActivity : AppCompatActivity() {
                             intent.putExtra("USERNAME", username) // Pass username
                             intent.putExtra("TECHNICIAN_NAME", technicianName) // Pass technician name
                             intent.putExtra("TECHNICIAN_PRICE", technicianPrice) // Pass technician price
+                            intent.putExtra("chatId", chatId) //chatid cik
                             startActivity(intent)
                             finish()
                             return@addOnSuccessListener // Stop execution after navigation
