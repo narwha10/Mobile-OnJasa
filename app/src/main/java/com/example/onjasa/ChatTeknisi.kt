@@ -34,8 +34,8 @@ class ChatTeknisi : AppCompatActivity() {
 
         // Tangkap data dari Intent
         chatId = intent.getStringExtra("chatId")
-        senderId = intent.getStringExtra("USERNAME") ?: "Anonymous"
-        receiverId = intent.getStringExtra("TECHNICIAN_NAME") ?: "Technician"
+        receiverId = intent.getStringExtra("USERNAME") ?: "Anonymous"
+        senderId = intent.getStringExtra("TECHNICIAN_NAME") ?: "Technician"
 
         Log.d("ChatTeknisi", "Chat ID: $chatId")
 

@@ -3,6 +3,7 @@ package com.example.onjasa
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -95,6 +96,7 @@ class HomeActivity : AppCompatActivity() {
                 }
                 R.id.chat -> {
                     val intent = Intent(this@HomeActivity, MapViewActivity::class.java)
+                    intent.putExtra("USERNAME", username)
                     startActivity(intent)
                     true
                 }

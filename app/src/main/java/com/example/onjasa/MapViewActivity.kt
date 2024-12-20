@@ -307,18 +307,48 @@ class MapViewActivity : AppCompatActivity() {
 
     private fun updateOrderStatusToDone(username: String) {
         val db = FirebaseFirestore.getInstance()
-        val orderId = case1Snapshot?.id // Ambil ID dokumen dari snapshot
+        val orderBy = intent.getStringExtra("orderBy") ?: ""
+        val status = "utiwi"
 
-        if (orderId != null) {
-            db.collection("orders").document(orderId)
-                .update("status", "done")
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Pesanan telah selesai", Toast.LENGTH_SHORT).show()
+        Log.d("MapViewActivity", "Diterima orderId: dododo")
+
+        // Mencari dokumen yang memiliki order_by dan technician_name sesuai
+        db.collection("orders")
+            .whereEqualTo("status", status)
+            .whereEqualTo("order_by", orderBy)
+            .whereEqualTo("technician_name", technicianName)  // Sesuaikan dengan nama teknisi
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // Ambil dokumen pertama yang ditemukan (asumsi hanya satu)
+                    val document = documents.documents[0]
+                    val orderId = document.id  // Dapatkan ID dokumen
+
+                    Log.d("MapViewActivity", "Diterima orderId: $orderId")
+
+                    // Lakukan update status untuk orderId yang ditemukan
+                    db.collection("orders")
+                        .document(orderId)
+                        .update("status", "done")  // Mengupdate status order menjadi "done"
+                        .addOnSuccessListener {
+                            Log.d("MapViewActivity", "Order status updated to done")
+                            Toast.makeText(this, "Order status updated to done", Toast.LENGTH_SHORT).show()
+
+                            finish()  // Menutup MapViewActivity agar tidak muncul di back stack
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("MapViewActivity", "Error updating order status: ${e.message}")
+                            Toast.makeText(this, "Error updating order status", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "Order not found for the technician", Toast.LENGTH_SHORT).show()
                 }
-                .addOnFailureListener { e ->
-                    Log.e("MapViewActivity", "Error updating order status: ${e.message}")
-                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        }
+            }
+            .addOnFailureListener { e ->
+                Log.e("MapViewActivity", "Error retrieving order: ${e.message}")
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
+
+
 }

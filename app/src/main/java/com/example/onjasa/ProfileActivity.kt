@@ -110,21 +110,47 @@ class ProfileActivity : AppCompatActivity() {
                     val document = documents.documents[0]
                     val userId = document.id // Dapatkan ID dokumen untuk referensi
 
-                    // Update field "status" menjadi true
+                    // Update field "level" menjadi true
                     db.collection("users").document(userId)
                         .update("level", true)
                         .addOnSuccessListener {
-                            // Tampilkan Toast jika berhasil
-                            Toast.makeText(this, "You are a technician now!", Toast.LENGTH_SHORT).show()
+                            // Periksa apakah dokumen dengan nama yang sama sudah ada di koleksi "technician"
+                            db.collection("technician").whereEqualTo("nama", username)
+                                .get()
+                                .addOnSuccessListener { technicianDocs ->
+                                    if (technicianDocs.isEmpty) {
+                                        // Tambahkan dokumen baru ke koleksi "technician"
+                                        val technicianData = hashMapOf(
+                                            "nama" to username,
+                                            "harga" to "Rp200.000"
+                                        )
+                                        db.collection("technician").add(technicianData)
+                                            .addOnSuccessListener {
+                                                // Tampilkan Toast jika berhasil
+                                                Toast.makeText(this, "You are a technician now!", Toast.LENGTH_SHORT).show()
 
-                            // Lakukan logout setelah update berhasil
-                            auth.signOut()
+                                                // Lakukan logout setelah update berhasil
+                                                auth.signOut()
 
-                            // Intent ke LoginActivity
-                            Intent(this@ProfileActivity, LoginActivity::class.java).also { intent ->
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                            }
+                                                // Intent ke LoginActivity
+                                                Intent(this@ProfileActivity, LoginActivity::class.java).also { intent ->
+                                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                    startActivity(intent)
+                                                }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                // Tampilkan pesan jika gagal menambahkan dokumen baru
+                                                Toast.makeText(this, "Gagal menambahkan data technician: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                    } else {
+                                        // Jika dokumen sudah ada, tampilkan pesan
+                                        Toast.makeText(this, "Data technician dengan nama ini sudah ada.", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    // Tampilkan pesan jika gagal memeriksa koleksi technician
+                                    Toast.makeText(this, "Gagal memeriksa data technician: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
                         }
                         .addOnFailureListener { e ->
                             // Tampilkan pesan jika gagal memperbarui status
@@ -139,6 +165,8 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+
 
     private fun showLogoutConfirmationDialog() {
         AlertDialog.Builder(this).apply {
